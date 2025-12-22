@@ -1,0 +1,493 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "IDRM API服务",
+        "description": "统一API入口，包含所有业务模块",
+        "version": "v1",
+        "contact": {
+            "name": "IDRM Team"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8888",
+            "description": "本地开发环境"
+        },
+        {
+            "url": "https://api.idrm.com",
+            "description": "生产环境"
+        }
+    ],
+    "tags": [
+        {
+            "name": "资源目录-类别",
+            "description": "资源目录模块的类别管理接口"
+        },
+        {
+            "name": "数据视图-类别",
+            "description": "数据视图模块的类别管理接口"
+        }
+    ],
+    "paths": {
+        "/api/v1/catalog/categories/{id}": {
+            "get": {
+                "tags": [
+                    "资源目录-类别"
+                ],
+                "summary": "获取类别详情",
+                "description": "根据ID获取资源目录类别的详细信息",
+                "operationId": "getCatalogCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "类别ID",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryResp"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "类别不存在",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/catalog/categories": {
+            "get": {
+                "tags": [
+                    "资源目录-类别"
+                ],
+                "summary": "类别列表",
+                "description": "获取资源目录类别列表（分页）",
+                "operationId": "listCatalogCategories",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "页码",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "每页数量",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListCategoryResp"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "资源目录-类别"
+                ],
+                "summary": "创建类别",
+                "description": "创建新的资源目录类别",
+                "operationId": "createCatalogCategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCategoryReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "创建成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryResp"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/data_view/categories/{id}": {
+            "get": {
+                "tags": [
+                    "数据视图-类别"
+                ],
+                "summary": "获取类别详情",
+                "description": "根据ID获取数据视图类别的详细信息",
+                "operationId": "getDataViewCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "description": "类别ID",
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataViewCategoryResp"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "类别不存在",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/data_view/categories": {
+            "get": {
+                "tags": [
+                    "数据视图-类别"
+                ],
+                "summary": "类别列表",
+                "description": "获取数据视图类别列表（分页）",
+                "operationId": "listDataViewCategories",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "页码",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "每页数量",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataViewListCategoryResp"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "数据视图-类别"
+                ],
+                "summary": "创建类别",
+                "description": "创建新的数据视图类别",
+                "operationId": "createDataViewCategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DataViewCreateCategoryReq"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "创建成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DataViewCategoryResp"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CategoryResp": {
+                "type": "object",
+                "description": "资源目录类别响应",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "类别ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "类别名称"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "类别编码"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "父类别ID"
+                    },
+                    "level": {
+                        "type": "integer",
+                        "description": "层级"
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "description": "排序"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "描述"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "状态"
+                    }
+                }
+            },
+            "CreateCategoryReq": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "code"
+                ],
+                "description": "创建资源目录类别请求",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "类别名称"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "类别编码"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "父类别ID"
+                    },
+                    "level": {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "层级"
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "排序"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "描述"
+                    }
+                }
+            },
+            "ListCategoryResp": {
+                "type": "object",
+                "description": "资源目录类别列表响应",
+                "properties": {
+                    "list": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryResp"
+                        },
+                        "description": "类别列表"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "总数"
+                    }
+                }
+            },
+            "DataViewCategoryResp": {
+                "type": "object",
+                "description": "数据视图类别响应",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "类别ID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "类别名称"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "类别编码"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "父类别ID"
+                    },
+                    "level": {
+                        "type": "integer",
+                        "description": "层级"
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "description": "排序"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "描述"
+                    },
+                    "status": {
+                        "type": "integer",
+                        "description": "状态"
+                    }
+                }
+            },
+            "DataViewCreateCategoryReq": {
+                "type": "object",
+                "required": [
+                    "name",
+                    "code"
+                ],
+                "description": "创建数据视图类别请求",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "类别名称"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "类别编码"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "父类别ID"
+                    },
+                    "level": {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "层级"
+                    },
+                    "sort": {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "排序"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "描述"
+                    }
+                }
+            },
+            "DataViewListCategoryResp": {
+                "type": "object",
+                "description": "数据视图类别列表响应",
+                "properties": {
+                    "list": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/DataViewCategoryResp"
+                        },
+                        "description": "类别列表"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "总数"
+                    }
+                }
+            },
+            "Error": {
+                "type": "object",
+                "description": "错误响应",
+                "properties": {
+                    "code": {
+                        "type": "integer",
+                        "description": "错误码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "错误消息"
+                    }
+                }
+            }
+        }
+    }
+}
