@@ -1,0 +1,90 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Go workspace file
+go.work
+
+# Dependency directories
+vendor/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build output
+bin/
+build/
+dist/
+*.log
+
+# go-zero generated files (optional - 可根据需要调整)
+# api/internal/types/types.go  # 如果想忽略自动生成的 types.go
+
+# Environment and config files
+.env
+.env.local
+*.env
+
+# Debug files
+__debug_bin
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database files (for local development)
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+logs/
+*.log
+
+# OS specific
+Thumbs.db
+.DS_Store
+
+# Coverage
+coverage.txt
+coverage.html
+*.coverprofile
+
+# Air (live reload tool)
+tmp/
+
+# Goland
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# Vim
+*.swp
+*.swo
+
+# Emacs
+*~
+\#*\#
+
+# Application specific
+# 根据项目需要添加
+# api/etc/api-dev.yaml    # 开发环境配置
+# api/etc/api-prod.yaml   # 生产环境配置
