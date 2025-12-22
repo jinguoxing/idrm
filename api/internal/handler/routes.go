@@ -6,7 +6,7 @@ package handler
 import (
 	"net/http"
 
-	resource_catalog "idrm/api/internal/handler/resource_catalog"
+	resource_catalogcategory "idrm/api/internal/handler/resource_catalog/category"
 	"idrm/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -19,19 +19,19 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				// 创建类别
 				Method:  http.MethodPost,
 				Path:    "/categories",
-				Handler: resource_catalog.CreateCategoryHandler(serverCtx),
+				Handler: resource_catalogcategory.CreateCategoryHandler(serverCtx),
 			},
 			{
 				// 类别列表
 				Method:  http.MethodGet,
 				Path:    "/categories",
-				Handler: resource_catalog.ListCategoryHandler(serverCtx),
+				Handler: resource_catalogcategory.ListCategoryHandler(serverCtx),
 			},
 			{
 				// 获取类别详情
 				Method:  http.MethodGet,
 				Path:    "/categories/:id",
-				Handler: resource_catalog.GetCategoryHandler(serverCtx),
+				Handler: resource_catalogcategory.GetCategoryHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api/v1/catalog"),

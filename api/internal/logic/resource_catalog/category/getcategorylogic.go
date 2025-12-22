@@ -1,4 +1,7 @@
-package resource_catalog
+// Code scaffolded by goctl. Safe to edit.
+// goctl 1.9.2
+
+package category
 
 import (
 	"context"
@@ -16,6 +19,7 @@ type GetCategoryLogic struct {
 	svcCtx *svc.ServiceContext
 }
 
+// 获取类别详情
 func NewGetCategoryLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCategoryLogic {
 	return &GetCategoryLogic{
 		Logger: logx.WithContext(ctx),

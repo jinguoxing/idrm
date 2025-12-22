@@ -39,9 +39,9 @@ type (
 	}
 )
 
-// 资源目录服务组
+// 资源目录 - 类别服务
 @server(
-	group: resource_catalog
+	group: resource_catalog/category
 	prefix: /api/v1/catalog
 )
 service Api {
