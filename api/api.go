@@ -7,6 +7,7 @@ import (
 	"idrm/api/internal/config"
 	"idrm/api/internal/handler"
 	"idrm/api/internal/svc"
+	"idrm/pkg/validator"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
@@ -19,6 +20,10 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+
+	// 初始化验证器
+	validator.Init()
+	fmt.Println("Validator initialized successfully")
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
