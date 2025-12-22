@@ -1,0 +1,14 @@
+syntax = "v1"
+
+info (
+	title:   "IDRM API服务"
+	desc:    "统一API入口，包含所有业务模块"
+	version: "v1"
+)
+
+// 导入各模块的API定义
+import "resource_catalog/category.api"
+
+// TODO: 添加其他模块的导入
+// import "data_view/data_view.api"
+// import "data_understanding/data_understanding.api"

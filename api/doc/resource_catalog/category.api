@@ -1,12 +1,8 @@
 syntax = "v1"
 
-info(
-	title: "IDRM API服务"
-	desc: "统一API入口，包含所有业务模块"
-	version: "v1"
-)
-
 // ==================== 资源目录模块 ====================
+
+// 类型定义
 type (
 	CategoryReq {
 		Id int64 `path:"id"`
@@ -52,18 +48,12 @@ service Api {
 	@doc "获取类别详情"
 	@handler GetCategory
 	get /categories/:id (CategoryReq) returns (CategoryResp)
-
+	
 	@doc "创建类别"
 	@handler CreateCategory
 	post /categories (CreateCategoryReq) returns (CategoryResp)
-
+	
 	@doc "类别列表"
 	@handler ListCategory
 	get /categories (ListCategoryReq) returns (ListCategoryResp)
 }
-
-// ==================== 数据视图模块 ====================
-// TODO: 添加数据视图API定义
-
-// ==================== 数据理解模块 ====================
-// TODO: 添加数据理解API定义
