@@ -1,0 +1,44 @@
+syntax = "v1"
+
+// ==================== 示例：带 validate tag 的 API 定义 ====================
+
+// 类型定义 - 直接在 tag 中添加 validate
+type (
+	// 请求参数（带验证标签）
+	CreateCategoryReq {
+		Name        string `json:"name" validate:"required,min=2,max=50"`
+		Code        string `json:"code" validate:"required,alphanum,min=2,max=20"`
+		ParentId    int64  `json:"parent_id,optional" validate:"omitempty,gte=0"`
+		Level       int    `json:"level,optional,default=1" validate:"omitempty,gte=1,lte=5"`
+		Sort        int    `json:"sort,optional,default=0" validate:"omitempty,gte=0"`
+		Description string `json:"description,optional" validate:"omitempty,max=200"`
+	}
+
+	// 响应数据
+	CategoryResp {
+		Id          int64  `json:"id"`
+		Name        string `json:"name"`
+		Code        string `json:"code"`
+		ParentId    int64  `json:"parent_id"`
+		Level       int    `json:"level"`
+		Sort        int    `json:"sort"`
+		Description string `json:"description,omitempty"`
+		Status      int    `json:"status"`
+	}
+)
+
+// 使用说明：
+// 1. 在 .api 文件中定义类型时，直接在反引号中添加 validate tag
+// 2. 多个 tag 用空格分隔，如：`json:"name" validate:"required,min=2"`
+// 3. goctl 生成时会保留所有自定义 tag
+// 4. validate 规则与 go-playground/validator 完全兼容
+
+// 常用 validate 标签：
+// - required: 必填
+// - omitempty: 可选（与 optional 配合使用）
+// - min=2,max=50: 长度或数值范围
+// - alphanum: 只能包含字母和数字
+// - email: 邮箱格式
+// - gte=0: 大于等于
+// - lte=100: 小于等于
+// - oneof=A B C: 枚举值
