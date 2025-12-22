@@ -1,0 +1,27 @@
+Name: api
+Host: 0.0.0.0
+Port: 8080
+Timeout: 30000
+
+# ORM选择：sqlx 或 gorm
+ORM: sqlx
+
+# 多数据库配置
+DataSources:
+  ResourceCatalog:
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_resource_catalog?charset=utf8mb4&parseTime=true&loc=Local
+  DataView:
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_data_view?charset=utf8mb4&parseTime=true&loc=Local
+  DataUnderstanding:
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_data_understanding?charset=utf8mb4&parseTime=true&loc=Local
+
+# 认证配置
+Auth:
+  AccessSecret: your-secret-key-change-in-production
+  Access Expire: 7200
+
+# 日志配置
+Log:
+  ServiceName: api
+  Mode: console
+  Level: info

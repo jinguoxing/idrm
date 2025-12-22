@@ -1,0 +1,70 @@
+Name: consumer-server
+Mode: consumer
+
+# 多数据库配置
+DataSources:
+  DataView:
+    Driver: mysql
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_data_view?charset=utf8mb4&parseTime=true&loc=Local
+    MaxOpenConns: 100
+    MaxIdleConns: 10
+    ConnMaxLifetime: 3600
+  
+  DataUnderstanding:
+    Driver: mysql
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_data_understanding?charset=utf8mb4&parseTime=true&loc=Local
+    MaxOpenConns: 100
+    MaxIdleConns: 10
+    ConnMaxLifetime: 3600
+  
+  ResourceCatalog:
+    Driver: mysql
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_resource_catalog?charset=utf8mb4&parseTime=true&loc=Local
+    MaxOpenConns: 100
+    MaxIdleConns: 10
+    ConnMaxLifetime: 3600
+
+# Redis配置
+Redis:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass: ""
+  Db: 0
+
+# Kafka消费者配置
+Kafka:
+  Brokers:
+    - 127.0.0.1:9092
+  Consumers:
+    # 数据视图消费者
+    DataView:
+      Group: idrm-data-view-consumer
+      Topics:
+        - data_view_events
+      Workers: 5
+      AutoCommit: true
+      CommitInterval: 1000
+    
+    # 目录变更消费者
+    Catalog:
+      Group: idrm-catalog-consumer
+      Topics:
+        - catalog_events
+      Workers: 3
+      AutoCommit: true
+      CommitInterval: 1000
+
+# 日志配置
+Log:
+  ServiceName: consumer-server
+  Mode: file
+  Encoding: json
+  Level: info
+  Path: logs
+
+# 重试配置
+Retry:
+  MaxRetries: 3
+  InitialInterval: 1000
+  MaxInterval: 60000
+  Multiplier: 2

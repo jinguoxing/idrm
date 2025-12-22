@@ -1,0 +1,63 @@
+Name: job-server
+Mode: cron
+
+# 多数据库配置
+DataSources:
+  DataView:
+    Driver: mysql
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_data_view?charset=utf8mb4&parseTime=true&loc=Local
+    MaxOpenConns: 50
+    MaxIdleConns: 5
+    ConnMaxLifetime: 3600
+  
+  DataUnderstanding:
+    Driver: mysql
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_data_understanding?charset=utf8mb4&parseTime=true&loc=Local
+    MaxOpenConns: 50
+    MaxIdleConns: 5
+    ConnMaxLifetime: 3600
+  
+  ResourceCatalog:
+    Driver: mysql
+    Source: root:password@tcp(127.0.0.1:3306)/idrm_resource_catalog?charset=utf8mb4&parseTime=true&loc=Local
+    MaxOpenConns: 50
+    MaxIdleConns: 5
+    ConnMaxLifetime: 3600
+
+# Redis配置
+Redis:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass: ""
+  Db: 0
+
+# Kafka配置（用于发布事件）
+Kafka:
+  Brokers:
+    - 127.0.0.1:9092
+
+# 定时任务配置
+Jobs:
+  # 数据同步任务
+  SyncData:
+    Cron: "0 */5 * * * *"  # 每5分钟执行一次
+    Enabled: true
+  
+  # 统计任务
+  Statistics:
+    Cron: "0 0 1 * * *"    # 每天凌晨1点执行
+    Enabled: true
+  
+  # 清理任务
+  Cleanup:
+    Cron: "0 0 2 * * *"    # 每天凌晨2点执行
+    Enabled: true
+    RetentionDays: 30      # 保留30天数据
+
+# 日志配置
+Log:
+  ServiceName: job-server
+  Mode: file
+  Encoding: json
+  Level: info
+  Path: logs
