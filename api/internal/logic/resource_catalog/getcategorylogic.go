@@ -5,7 +5,7 @@ import (
 
 	"idrm/api/internal/svc"
 	"idrm/api/internal/types"
-	"idrm/common/errorx"
+	"idrm/pkg/errorx"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -28,7 +28,7 @@ func (l *GetCategoryLogic) GetCategory(req *types.CategoryReq) (resp *types.Cate
 	// 调用model层（无论是sqlx还是gorm，接口一致）
 	category, err := l.svcCtx.CategoryModel.FindOne(l.ctx, req.Id)
 	if err != nil {
-		return nil, errorx.NewCodeError(404, "类别不存在")
+		return nil, errorx.NewWithMsg(404, "类别不存在")
 	}
 
 	return &types.CategoryResp{
