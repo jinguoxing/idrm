@@ -2,6 +2,37 @@
 
 本目录用于存放 goctl 生成的 Swagger/OpenAPI 文档。
 
+## 🚀 快速开始（推荐）
+
+### 直接在浏览器中打开
+
+已为您准备好了独立的 HTML 文件，无需任何配置：
+
+```bash
+# 方式 1：直接双击打开
+打开文件：api/doc/swagger/index.html
+
+# 方式 2：使用命令行
+open api/doc/swagger/index.html        # macOS
+xdg-open api/doc/swagger/index.html    # Linux
+start api/doc/swagger/index.html       # Windows
+```
+
+**优势**：
+- ✅ 无需安装任何工具
+- ✅ 无需启动 Docker
+- ✅ 即开即用，自动加载 idrm.json
+- ✅ 支持在线测试 API
+
+### 文件说明
+
+```
+swagger/
+├── index.html      # Swagger UI 界面（直接打开即可）
+├── idrm.json       # API 规范文件
+└── README.md       # 本文件
+```
+
 ## 📋 目录说明
 
 此目录包含项目的 API 文档，使用 Swagger/OpenAPI 规范。

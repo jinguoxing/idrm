@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDRM API 文档</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css">
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+        
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #swagger-ui {
+            max-width: 1460px;
+            margin: 0 auto;
+        }
+
+        .swagger-ui .topbar {
+            background-color: #2c3e50;
+        }
+
+        .swagger-ui .info .title {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div id="swagger-ui"></div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js" crossorigin></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js" crossorigin></script>
+    <script>
+        window.onload = function() {
+            // 初始化 Swagger UI
+            const ui = SwaggerUIBundle({
+                // 使用同目录下的 idrm.json 文件
+                url: "./idrm.json",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                // 默认展开所有操作
+                docExpansion: "list",
+                // 默认展开所有模型
+                defaultModelsExpandDepth: 1,
+                // 显示请求持续时间
+                displayRequestDuration: true,
+                // 显示操作ID
+                displayOperationId: false,
+                // 过滤器
+                filter: true,
+                // 尝试自动补全
+                tryItOutEnabled: true,
+                // 持久化授权数据
+                persistAuthorization: true,
+                // 中文语言包（如果有的话）
+                supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+                // 验证规范
+                validatorUrl: null
+            });
+
+            window.ui = ui;
+        };
+    </script>
+</body>
+</html>
