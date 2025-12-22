@@ -1,18 +1,31 @@
-.PHONY: help build run-api run-job run-consumer test clean docker-build
+.PHONY: help build run-api run-job run-consumer test clean docker-build api-gen swagger run
 
 # 默认目标
-help:
-	@echo "IDRM 项目 Makefile"
-	@echo ""
-	@echo "可用命令:"
-	@echo "  make build           - 构建所有服务"
-	@echo "  make run-api         - 运行API服务"
-	@echo "  make run-job         - 运行定时任务服务"
-	@echo "  make run-consumer    - 运行消费者服务"
-	@echo "  make test            - 运行测试"
-	@echo "  make clean           - 清理构建文件"
-	@echo "  make docker-build    - 构建Docker镜像"
-	@echo "  make init-db         - 初始化数据库"
+help: ## 显示帮助信息
+	@echo "可用的命令:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: api-gen
+api-gen: ## 生成 API 代码
+	cd api && goctl api go -api doc/api/api.api -dir .
+	@echo "API 代码生成完成"
+
+.PHONY: swagger
+swagger: ## 生成 Swagger 文档
+	@echo "生成 Swagger 文档..."
+	@if command -v goctl-swagger >/dev/null 2>&1; then \
+		cd api && goctl api plugin -plugin goctl-swagger="swagger -filename idrm.json -basepath /" \
+			-api doc/api/api.api -dir doc/swagger; \
+		echo "Swagger 文档已生成: api/doc/swagger/idrm.json"; \
+	else \
+		echo "错误: goctl-swagger 未安装"; \
+		echo "请运行: go install github.com/zeromicro/goctl-swagger@latest"; \
+		exit 1; \
+	fi
+
+.PHONY: run
+run: ## 运行 API 服务
+	cd api && go run api.go -f etc/api.yaml
 
 # 构建所有服务
 build:
