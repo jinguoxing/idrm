@@ -2,79 +2,119 @@ package gorm
 
 import (
 	"context"
+	"errors"
 
 	"idrm/model/resource_catalog"
 
 	"gorm.io/gorm"
 )
 
-var _ resource_catalog.CategoryModel = (*CategoryModelGorm)(nil)
+var _ resource_catalog.CategoryModel = (*CategoryDao)(nil)
 
-type CategoryModelGorm struct {
+type CategoryDao struct {
 	db *gorm.DB
 }
 
-func NewCategoryModel(db *gorm.DB) resource_catalog.CategoryModel {
-	return &CategoryModelGorm{db: db}
+// NewCategoryDao 创建CategoryDao实例
+func NewCategoryDao(db *gorm.DB) resource_catalog.CategoryModel {
+	return &CategoryDao{db: db}
 }
 
-func (m *CategoryModelGorm) Insert(ctx context.Context, data *resource_catalog.Category) error {
-	return m.db.WithContext(ctx).Create(data).Error
-}
-
-func (m *CategoryModelGorm) FindOne(ctx context.Context, id int64) (*resource_catalog.Category, error) {
-	var category resource_catalog.Category
-	err := m.db.WithContext(ctx).First(&category, id).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, resource_catalog.ErrNotFound
+// Insert 插入类别
+func (d *CategoryDao) Insert(ctx context.Context, data *resource_catalog.Category) (*resource_catalog.Category, error) {
+	if err := d.db.WithContext(ctx).Create(data).Error; err != nil {
+		return nil, err
 	}
-	return &category, err
+	return data, nil
 }
 
-func (m *CategoryModelGorm) FindByCode(ctx context.Context, code string) (*resource_catalog.Category, error) {
+// FindOne 根据ID查找类别
+func (d *CategoryDao) FindOne(ctx context.Context, id int64) (*resource_catalog.Category, error) {
 	var category resource_catalog.Category
-	err := m.db.WithContext(ctx).Where("code = ?", code).First(&category).Error
-	if err == gorm.ErrRecordNotFound {
-		return nil, resource_catalog.ErrNotFound
+	err := d.db.WithContext(ctx).Where("id = ?", id).First(&category).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("category not found")
+		}
+		return nil, err
 	}
-	return &category, err
+	return &category, nil
 }
 
-func (m *CategoryModelGorm) Update(ctx context.Context, data *resource_catalog.Category) error {
-	return m.db.WithContext(ctx).Save(data).Error
+// FindByCode 根据code查找类别
+func (d *CategoryDao) FindByCode(ctx context.Context, code string) (*resource_catalog.Category, error) {
+	var category resource_catalog.Category
+	err := d.db.WithContext(ctx).Where("code = ?", code).First(&category).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil // code不存在返回nil
+		}
+		return nil, err
+	}
+	return &category, nil
 }
 
-func (m *CategoryModelGorm) Delete(ctx context.Context, id int64) error {
-	return m.db.WithContext(ctx).Delete(&resource_catalog.Category{}, id).Error
+// Update 更新类别
+func (d *CategoryDao) Update(ctx context.Context, data *resource_catalog.Category) error {
+	return d.db.WithContext(ctx).Updates(data).Error
 }
 
-func (m *CategoryModelGorm) List(ctx context.Context, page, pageSize int) ([]*resource_catalog.Category, int64, error) {
+// Delete 删除类别
+func (d *CategoryDao) Delete(ctx context.Context, id int64) error {
+	return d.db.WithContext(ctx).Delete(&resource_catalog.Category{}, id).Error
+}
+
+// FindAll 查找所有类别
+func (d *CategoryDao) FindAll(ctx context.Context) ([]*resource_catalog.Category, error) {
+	var categories []*resource_catalog.Category
+	err := d.db.WithContext(ctx).Order("sort ASC, id ASC").Find(&categories).Error
+	return categories, err
+}
+
+// FindByParentId 根据父ID查找子类别
+func (d *CategoryDao) FindByParentId(ctx context.Context, parentId int64) ([]*resource_catalog.Category, error) {
+	var categories []*resource_catalog.Category
+	err := d.db.WithContext(ctx).
+		Where("parent_id = ?", parentId).
+		Order("sort ASC, id ASC").
+		Find(&categories).Error
+	return categories, err
+}
+
+// List 分页查询类别列表
+func (d *CategoryDao) List(ctx context.Context, page, pageSize int) ([]*resource_catalog.Category, int64, error) {
 	var categories []*resource_catalog.Category
 	var total int64
 
-	offset := (page - 1) * pageSize
-
-	// 查询总数
-	err := m.db.WithContext(ctx).Model(&resource_catalog.Category{}).Count(&total).Error
-	if err != nil {
+	// 计算总数
+	if err := d.db.WithContext(ctx).Model(&resource_catalog.Category{}).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
-	// 查询列表
-	err = m.db.WithContext(ctx).
+	// 分页查询
+	offset := (page - 1) * pageSize
+	err := d.db.WithContext(ctx).
 		Offset(offset).
 		Limit(pageSize).
-		Order("sort ASC, id DESC").
+		Order("sort ASC, id ASC").
 		Find(&categories).Error
 
 	return categories, total, err
 }
 
-func (m *CategoryModelGorm) FindByParentId(ctx context.Context, parentId int64) ([]*resource_catalog.Category, error) {
-	var categories []*resource_catalog.Category
-	err := m.db.WithContext(ctx).
-		Where("parent_id = ?", parentId).
-		Order("sort ASC").
-		Find(&categories).Error
-	return categories, err
+// WithTx 返回带事务的DAO实例
+func (d *CategoryDao) WithTx(tx interface{}) resource_catalog.CategoryModel {
+	if gormTx, ok := tx.(*gorm.DB); ok {
+		return &CategoryDao{db: gormTx}
+	}
+	// 如果不是gorm事务，返回自身
+	return d
+}
+
+// Trans 执行事务
+func (d *CategoryDao) Trans(ctx context.Context, fn func(ctx context.Context, model resource_catalog.CategoryModel) error) error {
+	return d.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		txModel := &CategoryDao{db: tx}
+		return fn(ctx, txModel)
+	})
 }
