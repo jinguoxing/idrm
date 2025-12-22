@@ -152,3 +152,12 @@ func (m *CategoryModel) Trans(ctx context.Context, fn func(ctx context.Context, 
 		return fn(ctx, txModel)
 	})
 }
+// init 注册sqlx工厂
+func init() {
+	resource_catalog.RegisterSqlxCategoryFactory(func(db interface{}) resource_catalog.CategoryModel {
+if sqlDB, ok := db.(*sql.DB); ok {
+			return NewCategoryModel(sqlDB)
+		}
+		panic("invalid database type for sqlx factory")
+	})
+}

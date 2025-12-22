@@ -118,3 +118,12 @@ func (d *CategoryDao) Trans(ctx context.Context, fn func(ctx context.Context, mo
 		return fn(ctx, txModel)
 	})
 }
+// init 注册gorm工厂
+func init() {
+	resource_catalog.RegisterGormCategoryFactory(func(db interface{}) resource_catalog.CategoryModel {
+if gormDB, ok := db.(*gorm.DB); ok {
+			return NewCategoryDao(gormDB)
+		}
+		panic("invalid database type for gorm factory")
+	})
+}
