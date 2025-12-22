@@ -27,6 +27,40 @@ type CreateCategoryReq struct {
 	Description string `json:"description,optional"`
 }
 
+type DataViewCategoryReq struct {
+	Id int64 `path:"id"`
+}
+
+type DataViewCategoryResp struct {
+	Id          int64  `json:"id"`
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	ParentId    int64  `json:"parent_id"`
+	Level       int    `json:"level"`
+	Sort        int    `json:"sort"`
+	Description string `json:"description,omitempty"`
+	Status      int    `json:"status"`
+}
+
+type DataViewCreateCategoryReq struct {
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	ParentId    int64  `json:"parent_id,optional"`
+	Level       int    `json:"level,optional,default=1"`
+	Sort        int    `json:"sort,optional,default=0"`
+	Description string `json:"description,optional"`
+}
+
+type DataViewListCategoryReq struct {
+	Page     int `form:"page,optional,default=1"`
+	PageSize int `form:"page_size,optional,default=10"`
+}
+
+type DataViewListCategoryResp struct {
+	List  []DataViewCategoryResp `json:"list"`
+	Total int64                  `json:"total"`
+}
+
 type ListCategoryReq struct {
 	Page     int `form:"page,optional,default=1"`
 	PageSize int `form:"page_size,optional,default=10"`

@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	data_viewcategory "idrm/api/internal/handler/data_view/category"
 	resource_catalogcategory "idrm/api/internal/handler/resource_catalog/category"
 	"idrm/api/internal/svc"
 
@@ -13,6 +14,30 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				// 创建类别
+				Method:  http.MethodPost,
+				Path:    "/categories",
+				Handler: data_viewcategory.CreateCategoryHandler(serverCtx),
+			},
+			{
+				// 类别列表
+				Method:  http.MethodGet,
+				Path:    "/categories",
+				Handler: data_viewcategory.ListCategoryHandler(serverCtx),
+			},
+			{
+				// 获取类别详情
+				Method:  http.MethodGet,
+				Path:    "/categories/:id",
+				Handler: data_viewcategory.GetCategoryHandler(serverCtx),
+			},
+		},
+		rest.WithPrefix("/api/v1/data_view"),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{

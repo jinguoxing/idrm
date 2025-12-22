@@ -1,0 +1,59 @@
+syntax = "v1"
+
+// ==================== 数据视图模块 ====================
+
+// 类型定义
+type (
+	DataViewCategoryReq {
+		Id int64 `path:"id"`
+	}
+
+	DataViewCategoryResp {
+		Id          int64  `json:"id"`
+		Name        string `json:"name"`
+		Code        string `json:"code"`
+		ParentId    int64  `json:"parent_id"`
+		Level       int    `json:"level"`
+		Sort        int    `json:"sort"`
+		Description string `json:"description,omitempty"`
+		Status      int    `json:"status"`
+	}
+
+	DataViewCreateCategoryReq {
+		Name        string `json:"name"`
+		Code        string `json:"code"`
+		ParentId    int64  `json:"parent_id,optional"`
+		Level       int    `json:"level,optional,default=1"`
+		Sort        int    `json:"sort,optional,default=0"`
+		Description string `json:"description,optional"`
+	}
+
+	DataViewListCategoryReq {
+		Page     int `form:"page,optional,default=1"`
+		PageSize int `form:"page_size,optional,default=10"`
+	}
+
+	DataViewListCategoryResp {
+		List  []DataViewCategoryResp `json:"list"`
+		Total int64                  `json:"total"`
+	}
+)
+
+// 数据视图 - 类别服务
+@server(
+	group: data_view/category
+	prefix: /api/v1/data_view
+)
+service Api {
+	@doc "获取类别详情"
+	@handler GetCategory
+	get /categories/:id (DataViewCategoryReq) returns (DataViewCategoryResp)
+	
+	@doc "创建类别"
+	@handler CreateCategory
+	post /categories (DataViewCreateCategoryReq) returns (DataViewCategoryResp)
+	
+	@doc "类别列表"
+	@handler ListCategory
+	get /categories (DataViewListCategoryReq) returns (DataViewListCategoryResp)
+}
