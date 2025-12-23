@@ -1,0 +1,77 @@
+filebeat.inputs:
+  # API 访问日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/idrm/access.log
+    fields:
+      log_type: access
+      service: idrm-api
+    fields_under_root: true
+    json.keys_under_root: true
+    json.add_error_key: true
+    
+  # API 错误日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/idrm/error.log
+    fields:
+      log_type: error
+      service: idrm-api
+    fields_under_root: true
+    json.keys_under_root: true
+    json.add_error_key: true
+    
+  # API 慢查询日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/idrm/slow.log
+    fields:
+      log_type: slow
+      service: idrm-api
+    fields_under_root: true
+    json.keys_under_root: true
+    json.add_error_key: true
+    
+  # API stat日志
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/idrm/stat.log
+    fields:
+      log_type: stat
+      service: idrm-api
+    fields_under_root: true
+    json.keys_under_root: true
+    json.add_error_key: true
+
+# 日志处理
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+
+# 输出到 Elasticsearch
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "idrm-api-%{+yyyy.MM.dd}"
+  
+# 索引模板
+setup.template.name: "idrm-api"
+setup.template.pattern: "idrm-api-*"
+setup.ilm.enabled: false
+
+# Kibana 配置
+setup.kibana:
+  host: "kibana:5601"
+
+# 日志级别
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /usr/share/filebeat/logs
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644

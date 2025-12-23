@@ -1,0 +1,82 @@
+Name: idrm-api
+Host: 0.0.0.0
+Port: 8888
+
+Telemetry:
+  ServiceName: idrm-api
+  ServiceVersion: 1.0.0
+  Environment: docker
+  
+  Log:
+    Level: info
+    Mode: file
+    Path: logs
+    KeepDays: 7
+    RemoteEnabled: false
+    
+  Trace:
+    Enabled: true
+    Endpoint: jaeger:4317
+    Sampler: 0.1
+    
+  Audit:
+    Enabled: false
+
+DB:
+  ResourceCatalog:
+    Host: mysql
+    Port: 3306
+    Database: idrm_resource_catalog
+    Username: root
+    Password: idrm@2024
+    Charset: utf8mb4
+    MaxIdleConns: 10
+    MaxOpenConns: 100
+    ConnMaxLifetime: 3600
+    ConnMaxIdleTime: 600
+    LogLevel: warn
+    SlowThreshold: 200
+    SkipDefaultTxn: true
+    PrepareStmt: true
+    SingularTable: true
+    DisableForeignKey: true
+  
+  DataView:
+    Host: mysql
+    Port: 3306
+    Database: idrm_data_view
+    Username: root
+    Password: idrm@2024
+    Charset: utf8mb4
+    MaxIdleConns: 10
+    MaxOpenConns: 100
+    ConnMaxLifetime: 3600
+    ConnMaxIdleTime: 600
+    LogLevel: warn
+    SlowThreshold: 200
+    SkipDefaultTxn: true
+    PrepareStmt: true
+    SingularTable: true
+    DisableForeignKey: true
+  
+  DataUnderstanding:
+    Host: mysql
+    Port: 3306
+    Database: idrm_data_understanding
+    Username: root
+    Password: idrm@2024
+    Charset: utf8mb4
+    MaxIdleConns: 10
+    MaxOpenConns: 100
+    ConnMaxLifetime: 3600
+    ConnMaxIdleTime: 600
+    LogLevel: warn
+    SlowThreshold: 200
+    SkipDefaultTxn: true
+    PrepareStmt: true
+    SingularTable: true
+    DisableForeignKey: true
+
+Auth:
+  AccessSecret: idrm_docker_secret_2024
+  AccessExpire: 7200

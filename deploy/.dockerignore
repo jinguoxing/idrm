@@ -1,0 +1,36 @@
+# Binaries
+idrm-api
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Build output
+/dist
+/build
+
+# Go workspace
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Environment
+.env
+.env.local
+
+# Project specific
+project_bundle/
+
+# MAC
+.DS_Store
