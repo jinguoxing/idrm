@@ -1,7 +1,7 @@
 package response
 
 import (
-	"encoding/json\"
+	"encoding/json"
 	"net/http"
 
 	"idrm/pkg/errorx"
@@ -9,17 +9,17 @@ import (
 
 // HttpResponse 统一HTTP响应结构
 type HttpResponse struct {
-	Code int         `json:"code" example:"0"`                 // 业务状态码，0表示成功
-	Msg  string      `json:"msg" example:"success"`            // 响应消息
+	Code int         `json:"code" example:"0"`                    // 业务状态码，0表示成功
+	Msg  string      `json:"msg" example:"success"`               // 响应消息
 	Data interface{} `json:"data,omitempty" swaggertype:"object"` // 响应数据
 }
 
 // HttpError 增强版错误响应结构
 type HttpError struct {
-	Code        string      `json:"code" example:"idrm.common.internal_error"`        // 错误码，格式: 服务名.模块.错误
-	Description string      `json:"description" example:"内部错误"`                      // 错误描述
-	Solution    string      `json:"solution,omitempty" example:"请联系管理员"`            // 解决方案
-	Cause       string      `json:"cause,omitempty" example:"数据库连接失败"`             // 错误原因
+	Code        string      `json:"code" example:"idrm.common.internal_error"`    // 错误码，格式: 服务名.模块.错误
+	Description string      `json:"description" example:"内部错误"`                   // 错误描述
+	Solution    string      `json:"solution,omitempty" example:"请联系管理员"`          // 解决方案
+	Cause       string      `json:"cause,omitempty" example:"数据库连接失败"`            // 错误原因
 	Detail      interface{} `json:"detail,omitempty" swaggertype:"object,string"` // 错误详情
 }
 
