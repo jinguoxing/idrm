@@ -1,10 +1,10 @@
-package resource_catalog
+package category
 
 import "context"
 
-// CategoryModel interface定义类别仓储接口（统一抽象）
+// Model 定义类别仓储接口（统一抽象）
 // sqlx和gorm都需要实现此接口
-type CategoryModel interface {
+type Model interface {
 	// 基础CRUD操作
 	Insert(ctx context.Context, data *Category) (*Category, error)
 	FindOne(ctx context.Context, id int64) (*Category, error)
@@ -18,6 +18,6 @@ type CategoryModel interface {
 	List(ctx context.Context, page, pageSize int) ([]*Category, int64, error)
 
 	// 事务支持
-	WithTx(tx interface{}) CategoryModel
-	Trans(ctx context.Context, fn func(ctx context.Context, model CategoryModel) error) error
+	WithTx(tx interface{}) Model
+	Trans(ctx context.Context, fn func(ctx context.Context, model Model) error) error
 }

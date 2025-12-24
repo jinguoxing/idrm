@@ -13,20 +13,38 @@ Model 层采用**双 ORM 支持**架构，同时支持 `go-zero sqlx` 和 `gorm`
 
 ## 📁 目录结构
 
+### 新结构（按表分目录）
+
+每个表都是独立的目录，包含该表的所有相关代码：
+
 ```
 model/
-├── README.md                    # 本文档
-├── resource_catalog/           # 资源目录模块
-│   ├── interface.go            # 模型接口定义
-│   ├── types.go                # 数据结构（sqlx和gorm共用）
-│   ├── vars.go                 # 常量定义
-│   ├── factory.go              # ORM工厂（自动选择）
-│   ├── sqlx/                   # sqlx实现
-│   │   └── category_model.go
-│   └── gorm/                   # gorm实现
-│       └── category_dao.go
-└── data_view/                  # 数据视图模块（同上结构）
+├── README.md                          # 本文档
+├── resource_catalog/                  # 资源目录模块
+│   └── category/                      # 类别表（独立目录）
+│       ├── interface.go               # Model接口定义
+│       ├── types.go                   # Category数据结构
+│       ├── vars.go                    # 常量和错误定义
+│       ├── factory.go                 # ORM工厂（自动选择）
+│       ├── gorm_dao.go                # GORM实现
+│       └── sqlx_model.go              # SQLx实现
+├── data_view/                         # 数据视图模块
+│   └── query/                         # 查询表（同上结构）
+│       ├── interface.go
+│       ├── types.go
+│       ├── factory.go
+│       ├── gorm_dao.go
+│       └── sqlx_model.go
+└── data_understanding/                # 数据理解模块
+    └── ...
 ```
+
+### 优势
+
+- ✅ **清晰的职责分离**：每个表是独立单元
+- ✅ **易于定位**：按表名快速查找相关代码
+- ✅ **独立扩展**：新增表不影响现有代码
+- ✅ **符合Go惯例**：按功能模块组织
 
 ## 🚀 使用方法
 
@@ -34,15 +52,25 @@ model/
 
 ```go
 // api/internal/svc/servicecontext.go
+import (
+    "idrm/model/resource_catalog/category"
+    _ "idrm/model/resource_catalog/category" // 触发工厂注册
+)
+
+type ServiceContext struct {
+    Config        config.Config
+    CategoryModel category.Model  // 使用接口类型
+}
+
 func NewServiceContext(c config.Config) *ServiceContext {
     // 初始化数据库连接
-    sqlConn := sqlx.NewMySQL(c.Mysql.DataSource)
-    gormDB := initGorm(c.Mysql.DataSource)
+    sqlConn, _ := sqlx.NewMysql(dsn).RawDB()
+    gormDB, _ := db.InitGorm(c.DB.ResourceCatalog)
     
     return &ServiceContext{
         Config: c,
         // 自动选择ORM（优先gorm）
-        CategoryModel: resource_catalog.NewCategoryModel(sqlConn.RawDB(), gormDB),
+        CategoryModel: category.NewModel(sqlConn, gormDB),
     }
 }
 ```
@@ -54,7 +82,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 category, err := svcCtx.CategoryModel.FindOne(ctx, id)
 
 // 插入
-newCategory := &resource_catalog.Category{
+newCategory := &category.Category{
     Name: "测试类别",
     Code: "TEST001",
 }
@@ -76,14 +104,14 @@ categories, total, err := svcCtx.CategoryModel.List(ctx, page, pageSize)
 #### 方式一：使用 Trans 方法（推荐）
 
 ```go
-err := svcCtx.CategoryModel.Trans(ctx, func(ctx context.Context, model resource_catalog.CategoryModel) error {
+err := svcCtx.CategoryModel.Trans(ctx, func(ctx context.Context, model category.Model) error {
     // 在事务中执行多个操作
-    category1, err := model.Insert(ctx, &resource_catalog.Category{...})
+    category1, err := model.Insert(ctx, &category.Category{...})
     if err != nil {
         return err // 自动回滚
     }
     
-    category2, err := model.Insert(ctx, &resource_catalog.Category{...})
+    category2, err := model.Insert(ctx, &category.Category{...})
     if err != nil {
         return err // 自动回滚
     }
@@ -148,55 +176,204 @@ tx.Commit()
 
 ## 🔧 添加新模型
 
-### 1. 创建目录结构
+### 新结构（推荐）：按表分目录
+
+当需要添加新表（如`directory`表）时：
+
+#### 1. 创建表目录
 
 ```bash
-mkdir -p model/{module}/{sqlx,gorm}
+mkdir -p model/resource_catalog/directory
 ```
 
-### 2. 创建核心文件
+#### 2. 创建核心文件
 
-```bash
-touch model/{module}/interface.go
-touch model/{module}/types.go
-touch model/{module}/vars.go
-touch model/{module}/factory.go
-```
+在`model/resource_catalog/directory/`目录下创建以下文件：
 
-### 3. 定义接口
+**interface.go** - 定义接口
 
 ```go
-// model/{module}/interface.go
-package {module}
+package directory
 
-type {Model}Model interface {
-    Insert(ctx context.Context, data *{Model}) (*{Model}, error)
-    FindOne(ctx context.Context, id int64) (*{Model}, error)
+import "context"
+
+type Model interface {
+    Insert(ctx context.Context, data *Directory) (*Directory, error)
+    FindOne(ctx context.Context, id int64) (*Directory, error)
+    Update(ctx context.Context, data *Directory) error
+    Delete(ctx context.Context, id int64) error
     // ... 其他方法
     
     // 事务支持
-    WithTx(tx interface{}) {Model}Model
-    Trans(ctx context.Context, fn func(ctx context.Context, model {Model}Model) error) error
+    WithTx(tx interface{}) Model
+    Trans(ctx context.Context, fn func(ctx context.Context, model Model) error) error
 }
 ```
 
-### 4. 实现 ORM
-
-- **gorm**: 实现 `model/{module}/gorm/{table}_dao.go`
-- **sqlx**: 实现 `model/{module}/sqlx/{table}_model.go`
-
-### 5. 创建工厂
+**types.go** - 数据结构
 
 ```go
-// model/{module}/factory.go
-func New{Model}Model(sqlConn *sql.DB, gormDB *gorm.DB) {Model}Model {
-    if gormDB != nil {
-        return gorm.New{Model}Dao(gormDB)
+package directory
+
+import "time"
+
+type Directory struct {
+    Id        int64     `db:"id" gorm:"column:id;primaryKey"`
+    Name      string    `db:"name" gorm:"column:name;type:varchar(100)"`
+    // ... 其他字段
+    CreatedAt time.Time `db:"created_at" gorm:"column:created_at;autoCreateTime"`
+    UpdatedAt time.Time `db:"updated_at" gorm:"column:updated_at;autoUpdateTime"`
+}
+
+func (Directory) TableName() string {
+    return "directories"
+}
+```
+
+**vars.go** - 常量和错误
+
+```go
+package directory
+
+import "errors"
+
+var (
+    ErrNotFound = errors.New("directory not found")
+    // ... 其他错误
+)
+
+const (
+    StatusEnabled  = 1
+    StatusDisabled = 0
+)
+```
+
+**factory.go** - ORM工厂
+
+```go
+package directory
+
+import (
+    "database/sql"
+    "github.com/zeromicro/go-zero/core/logx"
+    "gorm.io/gorm"
+)
+
+type Factory func(interface{}) Model
+
+var (
+    gormFactory Factory
+    sqlxFactory Factory
+)
+
+func RegisterGormFactory(factory Factory) {
+    gormFactory = factory
+}
+
+func RegisterSqlxFactory(factory Factory) {
+    sqlxFactory = factory
+}
+
+func NewModel(sqlConn *sql.DB, gormDB *gorm.DB) Model {
+    if gormDB != nil && gormFactory != nil {
+        logx.Info("Using GORM for DirectoryModel")
+        return gormFactory(gormDB)
     }
-    if sqlConn != nil {
-        return sqlx.New{Model}Model(sqlConn)
+    
+    if sqlConn != nil && sqlxFactory != nil {
+        logx.Info("Using SQLx for DirectoryModel (fallback)")
+        return sqlxFactory(sqlConn)
     }
-    panic("no database connection available")
+    
+    panic("no database connection available for DirectoryModel")
+}
+```
+
+#### 3. 实现 GORM（gorm_dao.go）
+
+```go
+package directory
+
+import (
+    "context"
+    "gorm.io/gorm"
+)
+
+var _ Model = (*DirectoryDao)(nil)
+
+type DirectoryDao struct {
+    db *gorm.DB
+}
+
+func NewDirectoryDao(db *gorm.DB) Model {
+    return &DirectoryDao{db: db}
+}
+
+// 实现Model接口的所有方法...
+
+// init 注册gorm工厂
+func init() {
+    RegisterGormFactory(func(db interface{}) Model {
+        if gormDB, ok := db.(*gorm.DB); ok {
+            return NewDirectoryDao(gormDB)
+        }
+        panic("invalid database type for gorm factory")
+    })
+}
+```
+
+#### 4. 实现 SQLx（sqlx_model.go）
+
+```go
+package directory
+
+import (
+    "context"
+    "database/sql"
+    "github.com/zeromicro/go-zero/core/stores/sqlx"
+)
+
+var _ Model = (*DirectoryModel)(nil)
+
+type DirectoryModel struct {
+    conn sqlx.SqlConn
+}
+
+func NewDirectoryModel(conn *sql.DB) Model {
+    return &DirectoryModel{
+        conn: sqlx.NewSqlConnFromDB(conn),
+    }
+}
+
+// 实现Model接口的所有方法...
+
+// init 注册sqlx工厂
+func init() {
+    RegisterSqlxFactory(func(db interface{}) Model {
+        if sqlDB, ok := db.(*sql.DB); ok {
+            return NewDirectoryModel(sqlDB)
+        }
+        panic("invalid database type for sqlx factory")
+    })
+}
+```
+
+#### 5. 在ServiceContext中使用
+
+```go
+import (
+    "idrm/model/resource_catalog/directory"
+    _ "idrm/model/resource_catalog/directory" // 触发注册
+)
+
+type ServiceContext struct {
+    DirectoryModel directory.Model
+}
+
+func NewServiceContext(c config.Config) *ServiceContext {
+    return &ServiceContext{
+        DirectoryModel: directory.NewModel(sqlConn, gormDB),
+    }
 }
 ```
 
@@ -211,15 +388,19 @@ func New{Model}Model(sqlConn *sql.DB, gormDB *gorm.DB) {Model}Model {
 ### 2. 数据结构
 - `types.go` 中的结构体同时支持 `db` 和 `gorm` tag
 - 使用 `TableName()` 方法指定表名
+- 每个表的types.go独立在表目录下
 
 ```go
+// model/resource_catalog/category/types.go
+package category
+
 type Category struct {
     Id   int64  `db:"id" gorm:"column:id;primaryKey"`
     Name string `db:"name" gorm:"column:name"`
 }
 
 func (Category) TableName() string {
-    return "category"
+    return "categories"
 }
 ```
 
@@ -239,8 +420,10 @@ func (Category) TableName() string {
 
 ```go
 // ✅ 正确：使用接口
+import "idrm/model/resource_catalog/category"
+
 type ServiceContext struct {
-    CategoryModel resource_catalog.CategoryModel
+    CategoryModel category.Model  // 使用表目录的接口
 }
 
 // ❌ 错误：直接使用实现
@@ -253,13 +436,13 @@ type ServiceContext struct {
 
 ```go
 // ✅ 正确
-err := model.Trans(ctx, func(ctx context.Context, txModel CategoryModel) error {
+err := model.Trans(ctx, func(ctx context.Context, txModel category.Model) error {
     // 使用 txModel 操作
     return txModel.Insert(ctx, data)
 })
 
 // ❌ 错误
-err := model.Trans(ctx, func(ctx context.Context, txModel CategoryModel) error {
+err := model.Trans(ctx, func(ctx context.Context, txModel category.Model) error {
     // 不要使用原 model
     return model.Insert(ctx, data)
 })

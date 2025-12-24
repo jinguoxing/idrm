@@ -1,4 +1,4 @@
-package resource_catalog
+package category
 
 import "time"
 

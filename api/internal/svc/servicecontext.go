@@ -5,9 +5,7 @@ import (
 	"fmt"
 
 	"idrm/api/internal/config"
-	"idrm/model/resource_catalog"
-	_ "idrm/model/resource_catalog/gorm" // 触发GORM工厂注册
-	_ "idrm/model/resource_catalog/sqlx" // 触发SQLx工厂注册
+	"idrm/model/resource_catalog/category"
 	"idrm/pkg/db"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,7 +18,7 @@ type ServiceContext struct {
 	Config config.Config
 
 	// Model层（使用接口类型，支持自动ORM选择）
-	CategoryModel resource_catalog.CategoryModel
+	CategoryModel category.Model
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -56,7 +54,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	// 3. 使用工厂自动选择ORM（gorm优先，sqlx降级）
-	categoryModel := resource_catalog.NewCategoryModel(sqlConn, gormDB)
+	categoryModel := category.NewModel(sqlConn, gormDB)
 
 	return &ServiceContext{
 		Config:        c,
