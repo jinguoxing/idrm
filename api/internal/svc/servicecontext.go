@@ -6,6 +6,8 @@ import (
 
 	"idrm/api/internal/config"
 	"idrm/model/resource_catalog"
+	_ "idrm/model/resource_catalog/gorm" // 触发GORM工厂注册
+	_ "idrm/model/resource_catalog/sqlx" // 触发SQLx工厂注册
 	"idrm/pkg/db"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -24,20 +26,33 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	// 1. 初始化 sqlx 连接（作为备用）
 	var sqlConn *sql.DB
+	var sqlxErr error
 	dsn := buildDSN(c.DB.ResourceCatalog)
+	logx.Infof("尝试连接数据库(SQLx): %s:%d/%s", c.DB.ResourceCatalog.Host, c.DB.ResourceCatalog.Port, c.DB.ResourceCatalog.Database)
 	conn := sqlx.NewMysql(dsn)
-	var err error
-	sqlConn, err = conn.RawDB()
-	if err != nil {
-		logx.Errorf("SQLx RawDB获取失败: %v", err)
+	sqlConn, sqlxErr = conn.RawDB()
+	if sqlxErr != nil {
+		logx.Errorf("SQLx RawDB获取失败: %v, DSN: %s", sqlxErr, dsn)
+		sqlConn = nil
+	} else {
+		logx.Info("SQLx 连接成功")
 	}
 
 	// 2. 初始化 gorm 连接（优先）
 	var gormDB *gorm.DB
-	gormDB, err = db.InitGorm(c.DB.ResourceCatalog)
-	if err != nil {
-		// gorm初始化失败，记录日志，将使用sqlx作为降级
-		logx.Errorf("GORM初始化失败: %v, 将使用SQLx作为降级方案", err)
+	var gormErr error
+	logx.Infof("尝试连接数据库(GORM): %s:%d/%s", c.DB.ResourceCatalog.Host, c.DB.ResourceCatalog.Port, c.DB.ResourceCatalog.Database)
+	gormDB, gormErr = db.InitGorm(c.DB.ResourceCatalog)
+	if gormErr != nil {
+		logx.Errorf("GORM初始化失败: %v", gormErr)
+		gormDB = nil
+	} else {
+		logx.Info("GORM 连接成功")
+	}
+
+	// 如果两个都失败，提前panic
+	if sqlConn == nil && gormDB == nil {
+		panic(fmt.Sprintf("数据库连接失败！SQLx错误: %v, GORM错误: %v", sqlxErr, gormErr))
 	}
 
 	// 3. 使用工厂自动选择ORM（gorm优先，sqlx降级）

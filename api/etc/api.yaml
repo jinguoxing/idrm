@@ -37,7 +37,7 @@ DB:
     Port: 3306
     Database: idrm_resource_catalog
     Username: root
-    Password: your_password
+    Password: idrm@2024
     Charset: utf8mb4
     # 连接池配置
     MaxIdleConns: 10

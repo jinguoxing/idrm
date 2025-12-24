@@ -129,12 +129,15 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile
+      args:
+        GOPROXY: https://goproxy.cn,direct
     container_name: idrm-api
     restart: always
     ports:
       - "8888:8888"
     environment:
       - ENV=docker
+      - GOPROXY=https://goproxy.cn,direct
     volumes:
       - ./config/api/api.docker.yaml:/app/etc/api.yaml:ro
       - ../logs:/app/logs

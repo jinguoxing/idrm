@@ -1,6 +1,10 @@
 # 多阶段构建
 FROM golang:1.24-alpine AS builder
 
+# 设置 Go 代理加速(构建时参数)
+ARG GOPROXY=https://goproxy.cn,direct
+ENV GOPROXY=${GOPROXY}
+
 # 设置工作目录
 WORKDIR /app
 
