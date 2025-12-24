@@ -1,0 +1,50 @@
+# IDRM Project Rules for Claude Code
+
+## Project Overview
+IDRM is an intelligent data resource management platform built with Go-Zero.
+
+## Tech Stack
+- Go 1.21+, Go-Zero v1.9+
+- MySQL 8.0, Redis, Kafka
+- GORM + SQLx (Dual ORM)
+
+## Specification Documents
+All specs are in `private_doc/spec/`:
+- `constitution.md` - Project charter and AI collaboration rules
+- `architecture/layered-architecture.md` - Layered architecture details
+- `architecture/dual-orm-pattern.md` - Dual ORM implementation
+- `coding-standards/go-style-guide.md` - Go coding standards
+- `coding-standards/naming-conventions.md` - Naming rules
+
+## Mandatory Workflow
+ALWAYS follow 4-phase workflow from constitution.md:
+1. **Specify** - Define what to build
+2. **Plan** - Technical design
+3. **Tasks** - Break into <50 line tasks
+4. **Implement** - Incremental execution
+
+## Architecture Constraints
+- **Layered**: Handler → Logic → Model
+- **No cross-layer violations**
+- **Model layer**: Table-based directories
+- **Dual ORM**: Both GORM and SQLx
+
+## Code Generation Rules
+- Chinese comments for all public items
+- Functions < 50 lines
+- Error wrapping with %w
+- No business logic in Model layer
+- No database access in Logic layer
+
+## Before ANY code generation
+1. Read relevant specs from `private_doc/spec/`
+2. Confirm specification with me
+3. Show technical plan
+4. Break into tasks
+5. Implement incrementally
+
+## Quality Gates
+- ✅ Compiles successfully
+- ✅ Tests pass
+- ✅ golangci-lint clean
+- ✅ Conforms to specs
