@@ -88,10 +88,9 @@ tmp/
 # 根据项目需要添加
 api/etc/api-dev.yaml    # 开发环境配置
 # api/etc/api-prod.yaml   # 生产环境配置
-project_bundle/private_doc/
 
 # Private documents
-private_doc/
+#private_doc/
 
 # Project bundles
 project_bundle/
