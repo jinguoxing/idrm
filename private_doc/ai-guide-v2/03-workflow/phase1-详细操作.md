@@ -6,7 +6,10 @@
 
 ## 🎯 本阶段目标
 
-将模糊的功能需求，转化为清晰、可测试的规范文档。
+将模糊的功能需求，转化为清晰的**业务需求规范**。
+
+**核心原则** (对齐GitHub Spec Kit)：
+> "Focus on the what and why, not the tech stack"
 
 **时间投入**：
 - 简单功能：15-20分钟
@@ -251,131 +254,96 @@ Kiro会自动使用EARS格式
 
 ---
 
-### Step 3: 技术约束（Technical Constraints）
+### Step 3: Business Rules（业务规则）
 
-#### 3.1 IDRM标准约束
+> **新增**：对齐Spec Kit，聚焦业务逻辑
 
-**必须声明**：
+#### 3.1 什么是Business Rules？
+
+**定义**：业务层面的规则和约束，**不涉及技术实现**。
+
+**包含**：
+- ✅ 业务流程规则（如：审批流程）
+- ✅ 数据约束（如：唯一性、层级限制）
+- ✅ 业务逻辑限制（如：删除前检查依赖）
+- ✅ 业务值域（如：状态枚举）
+
+**不包含**（这些属于Phase 2）：
+- ❌ 技术架构（Handler/Logic/Model）
+- ❌ ORM选择（GORM/SQLx）
+- ❌ 编码规范（函数行数、注释）
+- ❌ 数据库表结构
+
+#### 3.2 Business Rules示例
+
+**分类管理功能**：
 ```markdown
-## Technical Constraints
+## Business Rules
 
-### 架构约束
-- MUST follow layered architecture (Handler → Logic → Model)
-- MUST implement dual ORM support (GORM + SQLx)
+### 层级规则
+- 分类最多支持3层（顶级→二级→三级）
+- 超过3层时系统拒绝创建
 
-### 编码约束
-- Functions MUST be < 50 lines
-- MUST use Chinese comments for all public items
-- Error wrapping MUST use %w
+### 唯一性规则
+- 分类名称在同一父分类下必须唯一
+- 分类编码全局唯一
 
-### 质量约束
-- Test coverage MUST be > 80%
-- MUST pass golangci-lint check
-- MUST follow go-style-guide
+### 删除规则
+- 删除分类前必须检查是否有子分类
+- 存在子分类时禁止删除
+- 删除使用软删除方式
+
+### 编码规则
+- 编码长度：2-20个字符
+- 允许字符：字母、数字、下划线、连字符
+- 格式示例：data-catalog、user_management
+
+### 排序规则
+- 同级分类支持自定义排序
+- 默认按创建时间排序
 ```
 
-#### 3.2 功能特定约束
+#### 3.3 Data Considerations（数据考量）
 
-**示例：分类管理**
+描述需要持久化的数据，**但不定义表结构**：
+
 ```markdown
-### 业务约束
-- Category hierarchy MUST NOT exceed 3 levels
-- Category name MUST be unique within parent
-- Category code MUST match pattern: ^[a-zA-Z0-9_-]{2,20}$
+## Data Considerations
 
-### 性能约束
-- List API response time SHOULD be < 200ms
-- MUST support pagination (max 100 items per page)
+需要存储的信息：
+- 分类基本信息（名称、编码、描述）
+- 层级关系（父分类引用）
+- 排序信息（同级排序值）
+- 元数据（创建时间、更新时间）
+- 软删除标记
 
-### 数据约束
-- name: 1-50 characters, non-empty
-- code: 2-20 characters, alphanumeric + underscore/hyphen
-- parent_id: nullable, must reference existing category
+数据关系：
+- 分类之间存在父子关系（树形结构）
+- 一个分类可以有多个子分类
+- 一个分类只能有一个父分类
 ```
 
-#### 3.3 AI辅助生成
+**注意**：具体的表结构、字段类型、Go结构体都在**Phase 2: Design**中定义。
+
+#### 3.4 AI辅助生成
 
 ```
-@private_doc/spec/core/project-charter.md
-@private_doc/spec/architecture/layered-architecture.md
+@spec/workflow/phase1-specify.md
 
-基于功能：{功能描述}
+功能：{功能描述}
 
-请生成Technical Constraints
-包括：
-1. IDRM通用约束
-2. 本功能特定的业务约束
-3. 性能和数据约束
+Phase 1: 生成Business Rules
+
+要求：
+1. 聚焦业务规则，不涉及技术实现
+2. 包含数据约束（唯一性、范围等）
+3. 包含业务流程限制
+4. 简要说明需要持久化的数据（Data Considerations）
 ```
 
 ---
 
-### Step 4: 数据模型（Data Model）
-
-#### 4.1 表结构定义
-
-```markdown
-## Data Model
-
-### categories表
-
-\`\`\`sql
-CREATE TABLE categories (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name        VARCHAR(50) NOT NULL COMMENT '分类名称',
-    code        VARCHAR(20) NOT NULL UNIQUE COMMENT '分类编码',
-    parent_id   BIGINT NULL COMMENT '父分类ID',
-    level       TINYINT NOT NULL DEFAULT 1 COMMENT '层级(1-3)',
-    sort_order  INT NOT NULL DEFAULT 0 COMMENT '排序',
-    created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at  DATETIME NULL COMMENT '软删除时间',
-    
-    INDEX idx_parent_id (parent_id),
-    INDEX idx_code (code),
-    INDEX idx_deleted_at (deleted_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='资源分类表';
-\`\`\`
-```
-
-#### 4.2 字段说明
-
-```markdown
-### 字段定义
-
-| 字段 | 类型 | 约束 | 说明 |
-|------|------|------|------|
-| id | BIGINT | PK, AUTO_INCREMENT | 主键 |
-| name | VARCHAR(50) | NOT NULL | 分类名称，1-50字符 |
-| code | VARCHAR(20) | NOT NULL, UNIQUE | 分类编码，全局唯一 |
-| parent_id | BIGINT | NULLABLE, FK | 父分类ID，NULL表示顶级 |
-| level | TINYINT | NOT NULL, 1-3 | 层级，1=顶级，最多3层 |
-| sort_order | INT | NOT NULL | 同级排序 |
-| created_at | DATETIME | NOT NULL | 创建时间 |
-| updated_at | DATETIME | NOT NULL | 更新时间 |
-| deleted_at | DATETIME | NULLABLE | 软删除时间 |
-```
-
-#### 4.3 Go结构体
-
-```go
-// Category 资源分类
-type Category struct {
-    ID        int64      `gorm:"column:id;primaryKey" db:"id" json:"id"`
-    Name      string     `gorm:"column:name;size:50;not null" db:"name" json:"name"`
-    Code      string     `gorm:"column:code;size:20;not null;uniqueIndex" db:"code" json:"code"`
-    ParentID  *int64     `gorm:"column:parent_id" db:"parent_id" json:"parent_id,omitempty"`
-    Level     int8       `gorm:"column:level;not null;default:1" db:"level" json:"level"`
-    SortOrder int        `gorm:"column:sort_order;not null;default:0" db:"sort_order" json:"sort_order"`
-    CreatedAt time.Time  `gorm:"column:created_at;not null" db:"created_at" json:"created_at"`
-    UpdatedAt time.Time  `gorm:"column:updated_at;not null" db:"updated_at" json:"updated_at"`
-    DeletedAt *time.Time `gorm:"column:deleted_at" db:"deleted_at" json:"deleted_at,omitempty"`
-}
-```
-
----
-
-### Step 5: 未确定项（Open Questions）
+### Step 4: 未确定项（Open Questions）
 
 #### 5.1 列出所有不确定的问题
 
@@ -433,15 +401,15 @@ type Category struct {
 - [ ] 异常流程覆盖充分
 - [ ] 每条EARS可测试
 
-**Technical Constraints**：
-- [ ] 包含IDRM通用约束
-- [ ] 包含功能特定约束
-- [ ] 约束清晰具体
+**Business Rules**：
+- [ ] 业务规则完整
+- [ ] 不包含技术实现细节
+- [ ] 数据约束清晰
 
-**Data Model**：
-- [ ] 表结构完整
-- [ ] 字段定义清楚
-- [ ] Go结构体正确
+**Data Considerations**：
+- [ ] 列出需要持久化的数据
+- [ ] 描述数据关系
+- [ ] **不定义表结构**（留给Phase 2）
 
 **Open Questions**：
 - [ ] 列出所有不确定项
@@ -454,8 +422,8 @@ type Category struct {
 
 - [ ] User stories是否完整？
 - [ ] EARS是否覆盖主要场景？
-- [ ] Technical constraints是否遵循规范？
-- [ ] Data model是否合理？
+- [ ] Business Rules是否明确？
+- [ ] **没有包含技术实现细节？**
 - [ ] Open questions是否已澄清？
 ```
 
@@ -520,12 +488,10 @@ stateDiagram-v2
 2. 每个输入参数都要验证
 3. 每个业务规则都要表达
 
-### Q3: Technical Constraints记不住？
+### Q3: Business Rules和Technical Constraints如何区分？
 **A**: 
-```
-@spec/core/project-charter.md
-列出IDRM的Technical Constraints模板
-```
+- Business Rules：业务层面（如层级限制、唯一性）→ Phase 1
+- Technical Constraints：技术层面（如架构、ORM）→ Phase 2
 
 ### Q4: Phase 1需要多详细？
 **A**: 
@@ -551,11 +517,11 @@ stateDiagram-v2
 ## Acceptance Criteria (EARS)
 分类组织，每类5-10条
 
-## Technical Constraints
-IDRM通用 + 功能特定
+## Business Rules
+业务规则和约束
 
-## Data Model
-表结构 + 字段说明 + Go结构体
+## Data Considerations
+需要持久化的数据描述（不是表结构）
 
 ## Open Questions
 待澄清问题列表
