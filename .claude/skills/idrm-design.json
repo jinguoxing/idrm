@@ -1,0 +1,65 @@
+{
+    "name": "idrm-design",
+    "version": "2.1.0",
+    "description": "生成技术设计方案，遵循IDRM Spec v2.1.0 - 包含架构、约束、数据模型",
+    "category": "design",
+    "spec_reference": "private_doc/spec/workflow/phase2-design.md",
+    "guide_reference": "private_doc/ai-guide-v2/03-workflow/phase2-详细操作.md",
+    "inputs": {
+        "requirements_file": {
+            "type": "file",
+            "required": true,
+            "description": "Phase 1生成的requirements.md文件路径"
+        }
+    },
+    "outputs": {
+        "design_file": {
+            "type": "file",
+            "path": "specs/features/{feature_name}/design.md",
+            "template": "phase2_design_template"
+        }
+    },
+    "prompt_template": {
+        "system": "你是一个解决方案架构师，遵循IDRM Spec v2.1.0规范。基于Phase 1的业务需求，设计完整的技术实现方案。",
+        "user": "基于以下业务需求：\n@{{requirements_file}}\n\n生成Phase 2 Design，严格按照以下结构：\n\n## Architecture Overview\n遵循IDRM分层架构：Handler → Logic → Model\n（包含架构图）\n\n## ORM Strategy\nGORM vs SQLx选择及理由\n- 简单CRUD → SQLx\n- 复杂查询/树形结构 → GORM\n- 混合场景 → 双ORM都实现\n\n## File Structure\n完整的文件清单：\n- Model层文件\n- Logic层文件\n- Handler层文件\n\n## Interface Definitions\n\n### Model Interface\n```go\ntype Model interface {\n    // 定义所有数据访问方法\n}\n```\n\n### Request/Response Types\n```go\n// 请求和响应结构体\n```\n\n## Sequence Diagrams\n主要流程的Mermaid序列图（必须在Technical Constraints之前）\n\n## Technical Constraints\n\n### IDRM通用约束\n- MUST follow layered architecture (Handler → Logic → Model)\n- MUST implement dual ORM support\n- Functions MUST be < 50 lines\n- MUST use Chinese comments for all public items\n- Error wrapping MUST use %w\n- Test coverage MUST be > 80%\n- MUST pass golangci-lint check\n\n### 功能特定约束\n- ORM选择理由\n- 性能要求（响应时间、并发）\n- 安全考虑\n\n## Data Model\n\n### 表结构\n```sql\nCREATE TABLE ... (\n    -- 完整的DDL\n)\n```\n\n### 字段说明\n| 字段 | 类型 | 约束 | 说明 | 业务规则来源 |\n\n### Go结构体\n```go\ntype Entity struct {\n    // GORM和SQLx标签\n}\n```\n\n### Business Rules映射\n说明Phase 1的Business Rules如何实现：\n| Business Rule (Phase 1) | Database Implementation (Phase 2) |\n\n## Error Handling\n错误定义和分层处理策略\n\n## Testing Strategy\n测试分层、Mock策略、覆盖率目标\n\n---\n\n参考规范：\n@private_doc/spec/workflow/phase2-design.md\n@private_doc/spec/architecture/layered-architecture.md\n@private_doc/spec/architecture/dual-orm-pattern.md\n@private_doc/ai-guide-v2/03-workflow/phase2-详细操作.md",
+        "examples": [
+            {
+                "feature": "分类管理",
+                "design_snippet": "## ORM Strategy\n- 使用GORM实现树形查询（支持预加载）\n- 使用SQLx实现简单CRUD（性能优化）\n\n## Business Rules → Database Design\n| 分类最多3层 | CHECK约束: level BETWEEN 1 AND 3 |\n| 编码全局唯一 | UNIQUE约束 on code |"
+            }
+        ]
+    },
+    "validation_rules": [
+        {
+            "rule": "layered_architecture",
+            "description": "必须遵循分层架构",
+            "check": "文档包含Handler→Logic→Model三层设计"
+        },
+        {
+            "rule": "sequence_before_constraints",
+            "description": "序列图必须在技术约束之前",
+            "check": "Sequence Diagrams章节在Technical Constraints之前"
+        },
+        {
+            "rule": "complete_data_model",
+            "description": "必须包含完整数据模型",
+            "check": "包含SQL表结构、字段说明、Go结构体"
+        },
+        {
+            "rule": "business_rules_mapping",
+            "description": "必须映射Business Rules",
+            "check": "包含Phase 1业务规则到数据库设计的映射表"
+        },
+        {
+            "rule": "technical_constraints_included",
+            "description": "必须包含技术约束",
+            "check": "包含IDRM通用约束和功能特定约束"
+        }
+    ],
+    "quality_gate": "Gate 2",
+    "next_phase": {
+        "phase": "Phase 3: Tasks",
+        "skill": "idrm-tasks",
+        "input": "本skill输出的design.md"
+    }
+}
