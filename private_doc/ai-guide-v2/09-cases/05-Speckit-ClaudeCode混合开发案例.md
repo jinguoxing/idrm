@@ -88,7 +88,7 @@ $ claude
 ```text
 现在进入 Phase 1: Specify。
 
-1. 运行 `speckit generate requirements tag-management` 生成模板。
+1. 运行 `speckit generate requirements tag-management` (会自动使用我们定制的 `specs/templates/requirements.md` 模版，包含 EARS 结构)。
 2. 读取生成的 `requirements.md`。
 3. 根据以下简述完善该文件（直接编辑）：
    - 功能：创建/删除标签、为资源打标签、按标签查询、标签统计
@@ -124,7 +124,7 @@ $ claude
 ```text
 进入 Phase 2: Design。
 
-1. 运行 `speckit generate design tag-management --from-requirements`。
+1. 运行 `speckit generate design tag-management` (自动使用定制的 `specs/templates/design.md`，包含架构约束)。
 2. 读取 `requirements.md` 和生成的 `design.md`。
 3. 完善 `design.md`，要求：
    - 遵循 @layered-architecture.md (Handler->Logic->Model)
@@ -156,11 +156,12 @@ $ claude
 ```text
 进入 Phase 3: Tasks。
 
-请读取 `design.md`，并在 `specs/features/tag-management/tasks.md` 中拆分开发任务。
-要求：
-1. 每个任务代码行数 < 50行
-2. 明确依赖关系 (Model -> Logic -> Handler)
-3. 包含详细验收标准
+1. 运行 `speckit generate tasks tag-management` (使用定制的 `specs/templates/tasks.md` 模版)。
+2. 读取 `design.md` 和生成的 `tasks.md`。
+3. 拆分开发任务，要求：
+   - 每个任务代码行数 < 50行
+   - 明确依赖关系 (Model -> Logic -> Handler)
+   - 包含详细验收标准
 
 完成后，无需Speckit验证，直接展示给我看。
 ```
