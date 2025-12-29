@@ -72,7 +72,7 @@ Phase 4: Implement (实施验证)
 ### 活动
 1. 编写用户故事
 2. 定义验收标准 (EARS notation)
-3. 明确技术约束
+3. 明确业务规则
 4. 列出不确定项
 
 ### 输出
@@ -91,12 +91,12 @@ SO THAT {benefit}
 WHEN {condition}
 THE SYSTEM SHALL {behavior}
 
-## Technical Constraints
-- MUST follow layered architecture
-- MUST implement dual ORM
+## Business Rules
+- 业务规则和约束（非技术实现）
+- 数据约束（唯一性、范围等）
 
-## Data Model
-... 
+## Data Considerations
+需要持久化的数据描述（不是表结构）
 
 ## Open Questions
 ...
@@ -112,8 +112,9 @@ THE SYSTEM SHALL {behavior}
 
 - [ ] 用户故事完整
 - [ ] 使用EARS notation
-- [ ] 技术约束明确
-- [ ] 数据模型清晰
+- [ ] 业务规则明确
+- [ ] 数据考量清晰
+- [ ] **不包含技术实现细节**
 
 ---
 
