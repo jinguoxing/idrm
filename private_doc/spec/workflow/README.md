@@ -10,11 +10,15 @@ Phase 0: Context → Phase 1: Specify → Phase 2: Design → Phase 3: Tasks →
 
 ## 文档清单
 
+### 核心工作流
 - [phase0-context.md](phase0-context.md) - 准备开发上下文
 - [phase1-specify.md](phase1-specify.md) - 定义需求规范（EARS）
 - [phase2-design.md](phase2-design.md) - 技术方案设计  
 - [phase3-tasks.md](phase3-tasks.md) - 任务拆分规划
 - [phase4-implement.md](phase4-implement.md) - 实施和验证
+
+### 扩展指南
+- [ears-notation-guide.md](ears-notation-guide.md) - EARS格式详解（Phase 1扩展）
 - [tool-mapping.md](tool-mapping.md) - 工具映射关系
 
 ## 快速开始

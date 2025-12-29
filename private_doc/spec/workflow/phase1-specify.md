@@ -53,6 +53,8 @@ WHEN 用户提交无效数据
 THE SYSTEM SHALL 返回验证错误信息
 ```
 
+**详细参考**：[ears-notation-guide.md](ears-notation-guide.md) - 包含5种EARS模式、实战示例、常见错误、质量标准等完整说明
+
 ## Business Rules说明
 
 **包含**：
