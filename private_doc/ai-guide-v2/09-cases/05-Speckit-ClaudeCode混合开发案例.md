@@ -125,15 +125,17 @@ $ claude
 进入 Phase 2: Design。
 
 1. 运行 `speckit generate design tag-management` (自动使用定制的 `specs/templates/design.md`，包含架构约束)。
-2. 读取 `requirements.md` 和生成的 `design.md`。
-3. 完善 `design.md`，要求：
+2. 运行 `speckit generate api tag-management` 生成 go-zero API 契约文件。
+3. 读取 `requirements.md`、生成的 `design.md` 和 `tag-management.api`。
+4. 完善 `design.md` 和 `.api` 文件，要求：
    - 遵循 @layered-architecture.md (Handler->Logic->Model)
    - 数据库设计：`tags` 表和 `resource_tags` 关联表，包含完整索引设计
    - Model接口：定义 Go interface
+   - API 接口：定义完整的 go-zero types 和 service
    - 序列图：用 Mermaid 描述"为资源打标签"的流程
    
-4. 完成后，运行 `speckit validate design tag-management`。
-5. 同样，如果验证失败，请自动修正。
+5. 完成后，运行 `speckit validate design tag-management`。
+6. 同样，如果验证失败，请自动修正。
 ```
 
 **关键点**：Claude Code 能很好地处理 Mermaid 语法和 SQL Schema 设计。Speckit 的验证器会检查是否遗漏了必要的章节（如 database schema）。
@@ -174,7 +176,19 @@ $ claude
 
 ### Step 1: Model 层开发
 
-**Prompt 7 (Model Implementation)**:
+**Prompt 7 (Code Generation)**:
+
+```text
+开始 Phase 4。首先生成代码框架。
+
+1. 运行 `goctl api go -api specs/features/tag-management/tag-management.api -dir api/ --style=goZero`。
+2. 检查生成的文件结构。
+3. 确认无报错后，继续实现 Model 层。
+```
+
+### Step 2: Model 层开发
+
+**Prompt 8 (Model Implementation)**:
 
 ```text
 开始 Phase 4。请实现 Model 层任务。

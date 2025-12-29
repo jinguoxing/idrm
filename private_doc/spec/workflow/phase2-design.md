@@ -108,6 +108,46 @@ type Entity struct { ... }
 - Go结构体定义
 - 索引设计
 
+### API Contract (go-zero)
+
+每个功能需要定义 go-zero 格式的 API 文件，作为前后端接口契约。
+
+**文件位置**: `specs/features/{name}/{name}.api`
+
+**格式要求**:
+```api
+syntax = "v1"
+
+info(
+    title: "{Feature} API"
+    desc: "功能描述"
+    version: "v1"
+)
+
+type (
+    CreateXxxReq {
+        Name string `json:"name"`
+    }
+    CreateXxxResp {
+        Id int64 `json:"id"`
+    }
+)
+
+@server(
+    prefix: /api/v1
+    group: {feature}
+)
+service idrm-api {
+    @handler CreateXxx
+    post /xxx (CreateXxxReq) returns (CreateXxxResp)
+}
+```
+
+**关键检查点**:
+- 遵循 RESTful 规范
+- 请求/响应类型定义完整
+- 分组和前缀符合项目约定
+
 ## AI工具使用
 
 **Kiro.dev**：
@@ -140,6 +180,7 @@ Phase 2: 生成Design
 - [ ] 序列图完整
 - [ ] 技术约束明确
 - [ ] 数据模型完整
+- [ ] **API Contract (.api) 定义完整**
 
 参考：`../quality/quality-gates.md#gate-2`
 

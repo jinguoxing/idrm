@@ -1,0 +1,15 @@
+{
+    "version": "1.0.0",
+    "templates": {
+        "requirements": "specs/templates/requirements.md",
+        "design": "specs/templates/design.md",
+        "tasks": "specs/templates/tasks.md",
+        "api": "specs/templates/api.api"
+    },
+    "validation": {
+        "require_ears": true,
+        "require_user_stories": true,
+        "require_api_contract": true,
+        "max_function_lines": 50
+    }
+}

@@ -239,10 +239,16 @@ type Model interface { ... }
 - Phase 3的tasks.md
 
 ### 活动
-1. 逐个实施task
-2. 编写测试
-3. Code Review
-4. 验证功能
+1. **生成代码框架**
+   ```bash
+   goctl api go -api specs/features/{name}/{name}.api -dir api/ --style=goZero
+   ```
+   - 生成 handler、types、routes 等基础代码
+   - 不要手动修改 `types.go`（由 goctl 管理）
+2. 逐个实施task
+3. 编写测试
+4. Code Review
+5. 验证功能
 
 ### 输出
 - 完整的代码实现
