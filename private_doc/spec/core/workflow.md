@@ -239,16 +239,24 @@ type Model interface { ... }
 - Phase 3的tasks.md
 
 ### 活动
-1. **生成代码框架**
+1. **生成 API 代码框架**
    ```bash
    goctl api go -api specs/features/{name}/{name}.api -dir api/ --style=goZero
    ```
    - 生成 handler、types、routes 等基础代码
    - 不要手动修改 `types.go`（由 goctl 管理）
-2. 逐个实施task
-3. 编写测试
-4. Code Review
-5. 验证功能
+
+2. **生成 Model 代码**
+   ```bash
+   goctl model mysql ddl -src migrations/{module}/{table}.sql -dir model/{module}/{name}/ --style=goZero
+   ```
+   - 生成基础的 CRUD 代码
+   - 如需自定义，在生成的文件基础上扩展
+
+3. 逐个实施task (Logic 层业务逻辑)
+4. 编写测试
+5. Code Review
+6. 验证功能
 
 ### 输出
 - 完整的代码实现

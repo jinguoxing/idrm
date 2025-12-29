@@ -103,8 +103,28 @@ type Entity struct { ... }
 - 特殊的技术限制
 
 ### Data Model
-- 完整的数据库表结构
-- 字段详细说明
+
+**DDL 文件位置**: `migrations/{module}/{table}.sql`
+
+每个功能需要输出独立的 DDL 文件，用于 `goctl model` 代码生成。
+
+**DDL 格式要求**:
+```sql
+-- migrations/resource_catalog/tags.sql
+CREATE TABLE `tags` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '标签ID',
+    `name` varchar(50) NOT NULL COMMENT '标签名称',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `deleted_at` datetime DEFAULT NULL COMMENT '删除时间(软删除)',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='标签表';
+```
+
+**关键检查点**:
+- 完整的表结构定义
+- 字段详细说明（COMMENT）
 - Go结构体定义
 - 索引设计
 
@@ -180,6 +200,7 @@ Phase 2: 生成Design
 - [ ] 序列图完整
 - [ ] 技术约束明确
 - [ ] 数据模型完整
+- [ ] **DDL 文件 (.sql) 定义完整**
 - [ ] **API Contract (.api) 定义完整**
 
 参考：`../quality/quality-gates.md#gate-2`
