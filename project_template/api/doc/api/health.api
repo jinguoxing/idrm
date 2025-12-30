@@ -1,0 +1,21 @@
+syntax = "v1"
+
+info (
+	title:   "Health Check API"
+	desc:    "Health check endpoints"
+	version: "v1.0"
+)
+
+type HealthResp {
+	Status  string `json:"status"`
+	Version string `json:"version"`
+}
+
+@server (
+	prefix: /api/v1
+)
+service {{PROJECT_NAME}}-api {
+	@doc "健康检查"
+	@handler HealthCheck
+	get /health returns (HealthResp)
+}

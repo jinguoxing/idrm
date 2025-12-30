@@ -1,0 +1,79 @@
+{
+    "name": "idrm-implement",
+    "version": "2.1.0",
+    "description": "实施代码，遵循IDRM编码规范和质量标准",
+    "category": "implementation",
+    "spec_reference": "sdd_doc/spec/workflow/phase4-implement.md",
+    "guide_reference": "sdd_doc/ai-guide-v2/03-workflow/phase4-详细操作.md",
+    "inputs": {
+        "task_id": {
+            "type": "string",
+            "required": true,
+            "description": "要执行的任务ID，如'Task 1'"
+        },
+        "tasks_file": {
+            "type": "file",
+            "required": true,
+            "description": "Phase 3生成的tasks.md文件路径"
+        }
+    },
+    "outputs": {
+        "code_files": {
+            "type": "array",
+            "description": "生成的代码文件列表"
+        },
+        "test_files": {
+            "type": "array",
+            "description": "生成的测试文件列表"
+        }
+    },
+    "prompt_template": {
+        "system": "你是一个Go语言开发专家，严格遵循IDRM编码规范。编写干净、可测试、符合规范的代码。",
+        "user": "执行以下任务：\n@{{tasks_file}} 中的 {{task_id}}\n\n## 编码要求\n\n### 代码规范\n1. **函数长度**：每个函数<50行\n2. **注释**：所有public项必须有中文注释\n3. **错误处理**：使用%w包装错误\n4. **命名**：使用驼峰命名，清晰表意\n\n### 测试要求\n1. **表驱动测试**：使用table-driven test模式\n2. **覆盖率**：>80%\n3. **Mock**：Logic/Handler层使用Mock\n\n### 代码模板\n\n#### Model层代码示例\n```go\npackage category\n\nimport \"context\"\n\n// Model 分类数据访问接口\ntype Model interface {\n    // Insert 插入新分类\n    // \n    // 参数：\n    //   ctx: 上下文\n    //   data: 分类数据\n    // 返回：\n    //   error: 插入失败时返回错误\n    Insert(ctx context.Context, data *Category) error\n}\n```\n\n#### Logic层代码示例\n```go\npackage category\n\nimport (\n    \"context\"\n    \"fmt\"\n)\n\n// CreateCategoryLogic 创建分类业务逻辑\ntype CreateCategoryLogic struct {\n    model Model\n}\n\n// Create 创建分类\n// \n// 业务规则：\n//   - 名称必须唯一\n//   - 层级不超过3层\nfunc (l *CreateCategoryLogic) Create(ctx context.Context, req *CreateCategoryReq) (*Category, error) {\n    // 1. 验证业务规则\n    exists, err := l.model.ExistsByName(ctx, req.Name)\n    if err != nil {\n        return nil, fmt.Errorf(\"检查名称唯一性失败: %w\", err)\n    }\n    if exists {\n        return nil, ErrCategoryNameExists\n    }\n    \n    // 2. 创建实体\n    category := &Category{\n        Name: req.Name,\n        Code: req.Code,\n    }\n    \n    // 3. 保存\n    if err := l.model.Insert(ctx, category); err != nil {\n        return nil, fmt.Errorf(\"保存分类失败: %w\", err)\n    }\n    \n    return category, nil\n}\n```\n\n#### 表驱动测试示例\n```go\nfunc TestCreateCategoryLogic_Create(t *testing.T) {\n    tests := []struct {\n        name    string\n        req     *CreateCategoryReq\n        mockFn  func(*MockModel)\n        want    *Category\n        wantErr error\n    }{\n        {\n            name: \"正常创建\",\n            req:  &CreateCategoryReq{Name: \"test\", Code: \"test\"},\n            mockFn: func(m *MockModel) {\n                m.EXPECT().ExistsByName(gomock.Any(), \"test\").Return(false, nil)\n                m.EXPECT().Insert(gomock.Any(), gomock.Any()).Return(nil)\n            },\n            wantErr: nil,\n        },\n        {\n            name: \"名称已存在\",\n            req:  &CreateCategoryReq{Name: \"exists\"},\n            mockFn: func(m *MockModel) {\n                m.EXPECT().ExistsByName(gomock.Any(), \"exists\").Return(true, nil)\n            },\n            wantErr: ErrCategoryNameExists,\n        },\n    }\n    \n    for _, tt := range tests {\n        t.Run(tt.name, func(t *testing.T) {\n            ctrl := gomock.NewController(t)\n            defer ctrl.Finish()\n            \n            mockModel := NewMockModel(ctrl)\n            tt.mockFn(mockModel)\n            \n            logic := NewCreateCategoryLogic(mockModel)\n            got, err := logic.Create(context.Background(), tt.req)\n            \n            if tt.wantErr != nil {\n                assert.ErrorIs(t, err, tt.wantErr)\n            } else {\n                assert.NoError(t, err)\n            }\n        })\n    }\n}\n```\n\n## 执行步骤\n\n1. 读取task详细信息\n2. 生成代码（遵循模板和规范）\n3. 生成对应的测试代码\n4. Self-review检查\n\n---\n\n参考规范：\n@sdd_doc/spec/coding-standards/go-style-guide.md\n@sdd_doc/spec/coding-standards/error-handling.md\n@sdd_doc/spec/coding-standards/testing-standards.md\n@sdd_doc/ai-guide-v2/03-workflow/phase4-详细操作.md"
+    },
+    "validation_rules": [
+        {
+            "rule": "functions_under_50_lines",
+            "description": "所有函数<50行",
+            "check": "运行静态分析检查函数行数"
+        },
+        {
+            "rule": "chinese_comments",
+            "description": "公开项必须有中文注释",
+            "check": "检查所有exported函数/类型是否有注释"
+        },
+        {
+            "rule": "error_wrapping",
+            "description": "错误包装使用%w",
+            "check": "检查fmt.Errorf调用是否使用%w"
+        },
+        {
+            "rule": "build_passes",
+            "description": "编译必须通过",
+            "command": "go build ./..."
+        },
+        {
+            "rule": "tests_pass",
+            "description": "测试必须通过",
+            "command": "go test ./..."
+        },
+        {
+            "rule": "lint_passes",
+            "description": "Lint必须通过",
+            "command": "golangci-lint run"
+        },
+        {
+            "rule": "coverage_over_80",
+            "description": "覆盖率>80%",
+            "command": "go test -cover ./..."
+        }
+    ],
+    "quality_gate": "Gate 4",
+    "automated_checks": [
+        "go build ./...",
+        "go test ./...",
+        "golangci-lint run",
+        "go test -cover -coverprofile=coverage.out ./...",
+        "go tool cover -func=coverage.out | grep total"
+    ]
+}

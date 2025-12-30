@@ -1,0 +1,14 @@
+syntax = "v1"
+
+info (
+	title:   "{{PROJECT_NAME}} API"
+	desc:    "{{PROJECT_NAME}} API Service"
+	author:  "Your Name"
+	email:   "your@email.com"
+	version: "v1.0"
+)
+
+import (
+	"base.api"
+	"api/health.api"
+)

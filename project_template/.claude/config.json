@@ -1,0 +1,127 @@
+{
+    "project": "IDRM",
+    "spec_version": "2.1.0",
+    "spec_root": "sdd_doc/spec",
+    "description": "IDRM项目的Claude Skills和Sub-agents配置，基于5阶段工作流",
+    "skills_directory": ".claude/skills",
+    "agents_directory": ".claude/agents",
+    "default_workflow": [
+        {
+            "phase": "Phase 0: Context",
+            "description": "准备开发环境和上下文",
+            "manual": true,
+            "checklist": [
+                "阅读project-charter.md",
+                "检查环境配置",
+                "确认数据库连接"
+            ]
+        },
+        {
+            "phase": "Phase 1: Specify",
+            "agent": "spec-agent",
+            "skill": "idrm-specify",
+            "gate": "Gate 1",
+            "output": "specs/features/{feature}/requirements.md"
+        },
+        {
+            "phase": "Phase 2: Design",
+            "agent": "design-agent",
+            "skill": "idrm-design",
+            "gate": "Gate 2",
+            "input": "specs/features/{feature}/requirements.md",
+            "output": "specs/features/{feature}/design.md"
+        },
+        {
+            "phase": "Phase 3: Tasks",
+            "agent": "implementation-agent",
+            "skill": "idrm-tasks",
+            "gate": "Gate 3",
+            "input": "specs/features/{feature}/design.md",
+            "output": "specs/features/{feature}/tasks.md"
+        },
+        {
+            "phase": "Phase 4: Implement",
+            "agent": "implementation-agent",
+            "skill": "idrm-implement",
+            "gate": "Gate 4",
+            "input": "specs/features/{feature}/tasks.md",
+            "output": "Code files + Tests"
+        },
+        {
+            "phase": "Review",
+            "agent": "review-agent",
+            "skill": "idrm-review",
+            "output": "review-report.md"
+        }
+    ],
+    "quality_gates": {
+        "gate_1": {
+            "name": "Requirements Gate",
+            "checks": [
+                "User Stories complete (AS/I WANT/SO THAT)",
+                "EARS notation used correctly",
+                "Business Rules defined (no tech details)",
+                "Data Considerations listed (no SQL schema)",
+                "No Technical Constraints in Phase 1"
+            ]
+        },
+        "gate_2": {
+            "name": "Design Gate",
+            "checks": [
+                "Follows layered architecture (Handler→Logic→Model)",
+                "Sequence Diagrams placed BEFORE Technical Constraints",
+                "Complete Technical Constraints (IDRM + specific)",
+                "Complete Data Model (SQL + Go structs)",
+                "Business Rules mapped to database design"
+            ]
+        },
+        "gate_3": {
+            "name": "Tasks Gate",
+            "checks": [
+                "Each task estimated <50 lines",
+                "Dependencies clearly stated",
+                "Bottom-up order (Model→Logic→Handler)",
+                "Acceptance criteria defined"
+            ]
+        },
+        "gate_4": {
+            "name": "Implementation Gate",
+            "checks": [
+                "go build passes",
+                "go test passes",
+                "golangci-lint passes",
+                "Test coverage >80%",
+                "Functions <50 lines",
+                "Chinese comments for public items"
+            ]
+        }
+    },
+    "spec_references": {
+        "workflow": {
+            "phase0": "sdd_doc/spec/workflow/phase0-context.md",
+            "phase1": "sdd_doc/spec/workflow/phase1-specify.md",
+            "phase2": "sdd_doc/spec/workflow/phase2-design.md",
+            "phase3": "sdd_doc/spec/workflow/phase3-tasks.md",
+            "phase4": "sdd_doc/spec/workflow/phase4-implement.md"
+        },
+        "architecture": {
+            "layered": "sdd_doc/spec/architecture/layered-architecture.md",
+            "dual_orm": "sdd_doc/spec/architecture/dual-orm-pattern.md"
+        },
+        "coding_standards": {
+            "go_style": "sdd_doc/spec/coding-standards/go-style-guide.md",
+            "error_handling": "sdd_doc/spec/coding-standards/error-handling.md",
+            "testing": "sdd_doc/spec/coding-standards/testing-standards.md"
+        },
+        "quality": {
+            "gates": "sdd_doc/spec/quality/quality-gates.md",
+            "review_checklist": "sdd_doc/spec/quality/code-review-checklist.md"
+        }
+    },
+    "ai_guide_references": {
+        "phase1_guide": "sdd_doc/ai-guide-v2/03-workflow/phase1-详细操作.md",
+        "phase2_guide": "sdd_doc/ai-guide-v2/03-workflow/phase2-详细操作.md",
+        "phase3_guide": "sdd_doc/ai-guide-v2/03-workflow/phase3-详细操作.md",
+        "phase4_guide": "sdd_doc/ai-guide-v2/03-workflow/phase4-详细操作.md"
+    }
+}
