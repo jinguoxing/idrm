@@ -18,7 +18,6 @@ You are an AI assistant working on the IDRM project, an intelligent data resourc
 | `.specify/templates/plan-template.md` | 技术设计模板 |
 | `.specify/templates/tasks-template.md` | 任务拆分模板 |
 | `.github/prompts/` | AI 引导文件 |
-| `CLAUDE.md` | 项目概览和规范索引 |
 
 ## Core Principles
 
