@@ -1,4 +1,4 @@
-# 实战案例：Speckit + Cursor Agent 混合开发
+# 实战案例：Spec Kit + Cursor Agent 混合开发
 
 > 规范驱动 + AI辅助 - 最佳组合工作流
 
@@ -8,19 +8,19 @@
 
 **功能**：数据标签（Tag）管理  
 **复杂度**：中等（约400行）  
-**工具**：Speckit CLI + Cursor Agent  
+**工具**：[GitHub Spec Kit](https://github.com/github/spec-kit) + Cursor Agent  
 **耗时**：1个工作日  
 **适用场景**：规范化团队开发、企业级项目
 
 ---
 
-## 💡 为什么选择 Speckit + Cursor？
+## 💡 为什么选择 Spec Kit + Cursor？
 
-### Speckit 的优势
-- 🎯 **规范驱动**：强制使用 GitHub Spec Kit 标准
+### Spec Kit 的优势
+- 🎯 **规范驱动**：GitHub 官方 Spec-Driven Development 工具包
 - 📋 **模板化**：自动生成标准化文档结构
 - ✅ **验证机制**：内置规范检查
-- 🔗 **原生集成**：与 GitHub 完美集成
+- 🔗 **原生集成**：与 GitHub 和多种 AI 工具完美集成
 
 ### Cursor Agent 的优势
 - 💬 **自然交互**：对话式开发体验
@@ -29,7 +29,7 @@
 - 🎨 **实时反馈**：即时预览效果
 
 ### 组合使用的价值
-✅ **Speckit** 生成规范化文档 → **Cursor** 基于规范实现代码  
+✅ **Spec Kit** 生成规范化文档 → **Cursor** 基于规范实现代码  
 ✅ 规范和实现完美对齐  
 ✅ 团队协作标准统一  
 ✅ 可追溯、可审计
@@ -38,52 +38,34 @@
 
 ## 🛠️ 工具准备
 
-### 1. 安装 Speckit
+### 1. 安装 Specify CLI
 
 ```bash
-# 安装 Speckit CLI
-npm install -g @github/speckit
+# 使用 uv 安装（推荐）
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
 # 验证安装
-speckit --version
+specify check
 
 # 查看帮助
-speckit --help
+specify --help
 ```
 
-### 2. 初始化 Specs 目录
+### 2. 初始化 Spec Kit
 
 ```bash
-# 在项目根目录初始化
+# 在项目根目录初始化（选择 Cursor Agent）
 cd /path/to/idrm
-speckit init
+specify init . --ai cursor-agent
 
 # 这会创建：
-# specs/
-#   ├── .speckit/          # Speckit 配置
-#   ├── features/          # 功能规范
-#   └── templates/         # 模板
+# .speckit/          # Spec Kit 配置
+# 以及必要的 slash commands 配置
 ```
 
-### 3. 配置 Speckit
+### 3. 配置 Spec Kit
 
-```bash
-# 编辑 .speckit/config.json
-cat > specs/.speckit/config.json << 'EOF'
-{
-  "version": "1.0.0",
-  "templates": {
-    "requirements": "templates/requirements.md",
-    "design": "templates/design.md"
-  },
-  "validation": {
-    "require_ears": true,
-    "require_user_stories": true,
-    "max_function_lines": 50
-  }
-}
-EOF
-```
+初始化后，Spec Kit 会自动配置 Cursor Agent 可用的 slash commands。
 
 ---
 
@@ -95,66 +77,48 @@ EOF
 
 ## 📝 Phase 0: Context (15分钟)
 
-### Step 1: 使用 Speckit 创建Feature
+### Step 1: 使用 /speckit.constitution 建立项目原则
+
+在 Cursor 中打开项目：
 
 ```bash
-# 创建新功能规范
-speckit create feature tag-management
-
-# Speckit 会提示输入信息
-# Feature name: Tag Management
-# Description: Data resource tagging system
-# Category: resource-management
-
-# 创建的目录结构：
-# specs/features/tag-management/
-#   ├── README.md
-#   ├── requirements.md (模板)
-#   ├── design.md (模板)
-#   └── .speckit.yaml
+cursor .
 ```
 
-### Step 2: 在 Cursor 中打开项目
+**打开 Cursor Agent (Cmd+L)**，使用 Spec Kit 的 slash command：
 
-```bash
-# 在 Cursor 中打开
-cursor .
+```
+/speckit.constitution 请创建项目开发原则，包含：
+- 遵循 Go-Zero 微服务架构
+- 使用 Handler→Logic→Model 分层
+- 函数行数不超过50行
+- 使用中文注释
+- 测试覆盖率大于80%
+```
 
-# Cursor 会自动识别：
-# - .cursorrules 
-# - CLAUDE.md
-# - specs/ 目录
+这会生成 `constitution.md`，定义项目的开发准则。
+
+### Step 2: 阅读项目规范
+
+```
+请阅读以下项目规范文件：
+@CLAUDE.md
+@sdd_doc/spec/core/workflow.md
+@sdd_doc/spec/architecture/layered-architecture.md
+
+总结关键规范要求。
 ```
 
 ---
 
 ## 📋 Phase 1: Specify (30分钟)
 
-### Step 1: 使用 Speckit 生成 Requirements 框架
+### Step 1: 使用 /speckit.specify 创建需求规范
 
-```bash
-# 使用 Speckit 模板生成
-speckit generate requirements tag-management
-
-# 生成内容：
-# specs/features/tag-management/requirements.md
-# 已包含：
-# - User Stories 模板
-# - Acceptance Criteria 模板  
-# - Business Rules 模板
-# - Data Considerations 模板
-```
-
-### Step 2: 在 Cursor 中完善 Requirements
-
-**打开 Cursor Agent (Cmd+L)**：
+**Cursor Agent Prompt**:
 
 ```
-@specs/features/tag-management/requirements.md
-@sdd_doc/spec/workflow/phase1-specify.md
-@sdd_doc/spec/workflow/ears-notation-guide.md
-
-请帮我完善这个 requirements.md 文档
+/speckit.specify 数据标签管理功能
 
 功能需求：
 1. 创建/删除标签
@@ -163,188 +127,76 @@ speckit generate requirements tag-management
 4. 标签统计
 
 要求：
-1. 填充User Stories（至少3个）
-2. 使用EARS notation编写Acceptance Criteria
+1. User Stories 使用 AS/I WANT/SO THAT 格式
+2. Acceptance Criteria 使用 EARS notation (WHEN... THE SYSTEM SHALL...)
 3. 覆盖正常、异常、边界场景
-4. 定义Business Rules（唯一性、长度、关联、删除）
-5. 定义Data Considerations
+4. 定义 Business Rules（唯一性、长度、关联、删除）
+5. 定义 Data Considerations
 6. **不包含技术实现细节**
-
-请保持Speckit生成的文档结构
 ```
 
-**Cursor 会自动填充**：
+**/speckit.specify** 会生成 **spec.md** 文件，包含完整的需求规范。
 
-```markdown
-# Requirements: Tag Management
+### Step 2: 使用 /speckit.clarify 澄清问题
 
-*Generated by Speckit v1.0.0*
+```
+/speckit.clarify
 
-## Overview
-Data resource tagging system for categorization and search.
-
-## User Stories
-
-### US-001: Create Tags
-AS a 数据管理员
-I WANT 创建新标签用于资源分类
-SO THAT 我可以有效组织和管理数据资源
-
-### US-002: Tag Resources
-AS a 数据管理员
-I WANT 为数据资源添加或移除标签
-SO THAT 我可以灵活组织数据
-
-### US-003: Search by Tags
-AS a 数据使用者
-I WANT 按标签查询数据资源
-SO THAT 我可以快速找到相关数据
-
-## Acceptance Criteria
-
-### Create Tag
-WHEN 用户提交有效的标签名称和颜色
-THE SYSTEM SHALL 保存标签并返回201状态码和标签ID
-...
-(完整的EARS)
-
-## Business Rules
-...
-
-## Data Considerations
-...
+请检查需求规范是否有遗漏或模糊的地方，如果有请自动补充。
 ```
 
-### Step 3: 使用 Speckit 验证
+### Step 3: 提交 Phase 1
 
 ```bash
-# 验证 requirements 是否符合规范
-speckit validate requirements tag-management
-
-# 输出：
-# ✓ User stories format valid
-# ✓ EARS notation detected
-# ✓ Business rules present
-# ✓ No technical details found
-# ✓ All requirements met
-
-# 如果有问题会提示：
-# ✗ Missing EARS notation
-# ✗ Technical constraints found (should be in design.md)
-```
-
-### Step 4: 在 Cursor 中继续完善
-
-**如果验证失败，使用 Cursor 修正**：
-
-```
-@specs/features/tag-management/requirements.md
-
-Speckit 验证发现以下问题：
-{粘贴验证错误}
-
-请修正这些问题，确保：
-1. 所有User Stories使用正确格式
-2. 所有验收标准使用EARS notation
-3. 移除任何技术实现细节
-```
-
-### Step 5: 提交 Phase 1
-
-```bash
-# 使用 Speckit 标记完成
-speckit mark complete requirements tag-management
-
-# Git 提交
-git add specs/features/tag-management/requirements.md
+git add .speckit/
 git commit -m "docs: complete tag management requirements (Phase 1)
 
-Generated with Speckit v1.0.0
-Validated and enhanced with Cursor Agent"
+Generated with GitHub Spec Kit
+Enhanced with Cursor Agent"
 ```
 
 ---
 
 ## 🎨 Phase 2: Design (40分钟)
 
-### Step 1: 使用 Speckit 生成 Design 框架
-
-```bash
-# 基于 requirements 生成 design
-speckit generate design tag-management --from-requirements
-
-# 生成包含：
-# - Architecture 部分
-# - File Structure 部分
-# - Interfaces 部分
-# - Technical Constraints 部分
-# - Database Schema 部分
-```
-
-### Step 2: 在 Cursor 中完善 Design
+### Step 1: 使用 /speckit.plan 创建技术方案
 
 **Cursor Agent Prompt**：
 
 ```
-@specs/features/tag-management/requirements.md
-@specs/features/tag-management/design.md
+/speckit.plan 使用以下技术栈：
+
+- Go-Zero 微服务框架
+- 遵循分层架构（Handler→Logic→Model）
+- 数据库设计：`tags` 表和 `resource_tags` 关联表，包含完整索引设计
+- API 接口：使用 go-zero .api 格式定义
+- ORM：选择 GORM（复杂查询）
+- 序列图：用 Mermaid 描述"为资源打标签"的流程
+
+参考：
 @sdd_doc/spec/architecture/layered-architecture.md
 @sdd_doc/spec/architecture/dual-orm-pattern.md
-
-请完善这个 design.md 文档
-
-要求：
-1. 遵循分层架构（Handler→Logic→Model）
-2. 详细定义文件结构（所有文件路径）
-3. 定义完整的Model接口（Go interface）
-4. 绘制序列图（Mermaid格式）
-5. 设计数据库表结构（带索引、注释）
-6. 说明Technical Constraints
-7. 说明ORM选择理由
-
-参考requirements.md中的业务需求
-保持Speckit的文档结构
 ```
 
-### Step 3: 使用 Speckit 验证 Design
+**/speckit.plan** 会生成 **plan.md** 文件，包含完整的技术设计。
 
-```bash
-# 验证设计文档
-speckit validate design tag-management
+### Step 2: 生成 API 和 DDL 文件
 
-# 检查：
-# ✓ Architecture diagram present
-# ✓ File structure defined
-# ✓ Interfaces specified
-# ✓ Database schema present
-# ✓ Links to requirements valid
+```
+基于 plan.md，请生成：
+1. `api/doc/resource_catalog/tag.api` - go-zero API 定义
+2. `migrations/resource_catalog/tags.sql` - DDL 文件
+
+遵循项目的文件路径规范。
 ```
 
-### Step 4: 生成交叉引用
+### Step 3: 提交 Phase 2
 
 ```bash
-# Speckit 自动生成需求和设计的交叉引用
-speckit link tag-management
-
-# 在 requirements.md 中添加：
-# ## Implemented in
-# - [Design Document](./design.md)
-
-# 在 design.md 中添加：
-# ## Implements
-# - [US-001: Create Tags](./requirements.md#us-001)
-# - [US-002: Tag Resources](./requirements.md#us-002)
-```
-
-### Step 5: 提交 Phase 2
-
-```bash
-speckit mark complete design tag-management
-
-git add specs/features/tag-management/design.md
+git add .speckit/ api/doc/ migrations/
 git commit -m "docs: complete tag management design (Phase 2)
 
-Generated with Speckit v1.0.0
+Generated with GitHub Spec Kit
 Enhanced with Cursor Agent"
 ```
 
@@ -352,53 +204,49 @@ Enhanced with Cursor Agent"
 
 ## 📋 Phase 3: Tasks (20分钟)
 
-### 使用 Cursor 生成 Tasks
+### 使用 /speckit.tasks 拆分任务
 
-**Speckit 暂不支持 tasks，使用 Cursor 生成**：
+**Cursor Agent Prompt**:
 
 ```
-@specs/features/tag-management/design.md
-
-请生成 specs/features/tag-management/tasks.md
+/speckit.tasks
 
 要求：
-1. 基于design.md拆分任务
-2. 每个task < 50行代码
+1. 基于 plan.md 拆分任务
+2. 每个 task < 50行代码
 3. 明确依赖关系
 4. 按顺序：Model → Logic → Handler → Test
-5. 遵循Speckit的文档风格
 ```
 
-**手动添加 Speckit 元数据**：
-
-```bash
-# 在 tasks.md 顶部添加
-cat > specs/features/tag-management/tasks.md << 'EOF'
-# Tasks: Tag Management
-
-*Part of Speckit feature: tag-management*
-
-## Task List
-...
-EOF
-```
+**/speckit.tasks** 会生成 **tasks.md** 文件，包含任务列表。
 
 ---
 
 ## 💻 Phase 4: Implement (4-6小时)
 
-### 方法：Cursor Agent 实现 + Speckit 追踪
+### 方法：/speckit.implement + Cursor Agent 实现
 
-### Step 1: 使用 Cursor 实现 Model 层
+### Step 1: 使用 /speckit.implement 开始实现
+
+```
+/speckit.implement
+
+请按照 tasks.md 中的任务列表逐个实现。
+首先生成代码框架：
+
+1. 运行 `goctl api go -api api/doc/resource_catalog/tag.api -dir api/ --style=goZero`
+2. 运行 `goctl model mysql ddl -src migrations/resource_catalog/tags.sql -dir model/resource_catalog/tag/ --style=goZero`
+```
+
+### Step 2: 实现 Model 层
 
 **Cursor Composer (Cmd+I)**：
 
 ```
 @specs/features/tag-management/design.md
-@specs/features/tag-management/tasks.md
 @sdd_doc/spec/coding-standards/go-style-guide.md
 
-请实现Task 1-3: Model层
+请实现 Model 层：
 
 文件：
 - model/resource_catalog/tag/interface.go
@@ -407,44 +255,21 @@ EOF
 - model/resource_catalog/tag/factory.go
 
 要求：
-- 遵循design.md的接口定义
+- 遵循 design 的接口定义
 - 完整的中文注释
 - 错误处理
 - 每个函数<50行
 ```
 
-**Cursor 会同时创建所有文件**
-
-### Step 2: 使用 Speckit 追踪进度
-
-```bash
-# 标记任务完成
-speckit track tag-management --task "Model Layer" --status completed
-
-# 查看进度
-speckit status tag-management
-
-# 输出：
-# Tag Management Feature
-# ├─ Requirements: ✓ Complete
-# ├─ Design: ✓ Complete  
-# └─ Implementation:
-#    ├─ Model Layer: ✓ Complete
-#    ├─ Logic Layer: ⏳ In Progress
-#    └─ Handler Layer: ⏸️ Not Started
-```
-
-### Step 3: 使用 Cursor 实现 Logic 层
+### Step 3: 实现 Logic 层
 
 **批量生成所有 Logic**：
 
 ```
 @model/resource_catalog/tag/interface.go
-@specs/features/tag-management/design.md
+@.speckit/plan.md
 
-请实现Task 4-9: Logic层
-
-为每个功能创建Logic文件：
+请实现 Logic 层，为每个功能创建 Logic 文件：
 - createtaglogic.go
 - deletetaglogic.go
 - assigntaglogic.go
@@ -454,57 +279,50 @@ speckit status tag-management
 
 要求：
 - 业务逻辑实现
-- 调用Model接口
+- 调用 Model 接口
 - 完整错误处理
 - 函数<50行
 - 中文注释
 ```
 
-### Step 4: 使用 Cursor 生成测试
+### Step 4: 生成测试
 
 ```
 @api/internal/logic/resource_catalog/tag/*.go
 @sdd_doc/spec/coding-standards/testing-standards.md
 
-为所有Logic生成单元测试
+为所有 Logic 生成单元测试
 
 要求：
 - 表驱动测试
-- Mock Model接口
+- Mock Model 接口
 - 覆盖率>80%
 - 测试正常和异常流程
 ```
 
-### Step 5: 验证并更新 Speckit
+### Step 5: 运行测试
 
 ```bash
 # 运行测试
 go test -cover ./model/resource_catalog/tag/
 go test -cover ./api/internal/logic/resource_catalog/tag/
-
-# 如果通过，标记完成
-speckit track tag-management --task "Logic Layer" --status completed
-speckit track tag-management --task "Unit Tests" --status completed
 ```
 
 ---
 
 ## ✅ Gate 4: 质量检查
 
-### 使用 Speckit 运行检查
+### 使用 /speckit.checklist 运行检查
 
-```bash
-# Speckit 内置质量检查
-speckit check tag-management
+```
+/speckit.checklist
 
-# 检查项：
-# ✓ All requirements have tests
-# ✓ Code coverage > 80%
-# ✓ All functions < 50 lines
-# ✓ All public functions have comments
-# ✓ No hardcoded values
-
-# 如果失败，使用 Cursor 修正
+请检查实现是否符合规范：
+- 所有需求都有对应实现
+- 代码覆盖率 > 80%
+- 所有函数 < 50 行
+- 所有公共函数有注释
+- 无硬编码值
 ```
 
 ### 使用 Cursor 进行 Code Review
@@ -512,12 +330,12 @@ speckit check tag-management
 ```
 @model/resource_catalog/tag/*.go
 @api/internal/logic/resource_catalog/tag/*.go
-@specs/features/tag-management/design.md
+@.speckit/plan.md
 
-请Review这些代码：
+请 Review 这些代码：
 
 检查：
-1. 是否符合design.md的设计？
+1. 是否符合 plan.md 的设计？
 2. 是否遵循分层架构？
 3. 函数是否<50行？
 4. 错误处理是否完整？
@@ -528,162 +346,59 @@ speckit check tag-management
 
 ---
 
-## 📊 Speckit 生成报告
-
-### 生成功能完成报告
-
-```bash
-# 生成完整报告
-speckit report tag-management --format markdown > report.md
-
-# 报告包含：
-# - Requirements coverage
-# - Design compliance  
-# - Implementation status
-# - Test coverage
-# - Quality metrics
-```
-
-**report.md 示例**：
-
-```markdown
-# Tag Management Feature Report
-
-*Generated by Speckit v1.0.0*
-
-## Summary
-- **Status**: ✓ Complete
-- **Requirements**: 3 user stories, 15 acceptance criteria
-- **Design**: Layered architecture, 12 files
-- **Implementation**: 398 lines of code
-- **Tests**: 85.3% coverage
-
-## Requirements Coverage
-- ✓ US-001: Create Tags (100%)
-- ✓ US-002: Tag Resources (100%)
-- ✓ US-003: Search by Tags (100%)
-
-## Quality Metrics
-- ✓ Function size: avg 35 lines (max 50)
-- ✓ Test coverage: 85.3% (min 80%)
-- ✓ Comment coverage: 100%
-- ✓ Lint errors: 0
-
-## Traceability Matrix
-| Requirement | Design | Implementation | Tests |
-|-------------|--------|----------------|-------|
-| US-001 | D-001 | Model.Insert | TestInsert |
-| US-002 | D-002 | Model.AssignTag | TestAssignTag |
-...
-```
-
----
-
-## 🔄 Cursor + Speckit 集成工作流总结
+## 🔄 Spec Kit + Cursor 集成工作流总结
 
 ### 最佳实践流程
 
 ```
-1. Speckit init             → 初始化项目结构
-2. Speckit create feature   → 创建功能框架
-3. Cursor Agent            → 填充requirements（EARS）
-4. Speckit validate        → 验证requirements
-5. Speckit generate design → 生成design框架
-6. Cursor Agent            → 完善design
-7. Speckit validate        → 验证design
-8. Cursor Composer         → 实现代码
-9. Speckit track           → 追踪进度
-10. Speckit check          → 质量检查
-11. Cursor Agent           → 修正问题
-12. Speckit report         → 生成报告
+1. specify init . --ai cursor-agent  → 初始化项目结构
+2. /speckit.constitution             → 建立项目原则
+3. /speckit.specify                  → 创建需求规范
+4. /speckit.clarify                  → 澄清问题
+5. /speckit.plan                     → 创建技术方案
+6. /speckit.tasks                    → 拆分任务
+7. /speckit.implement                → 实现代码
+8. /speckit.checklist                → 质量检查
+9. Cursor Agent                      → 修正问题
 ```
 
 ---
 
 ## 💡 组合使用技巧
 
-### 1. 使用 Speckit 模板 + Cursor 填充
+### 1. 使用 Spec Kit Slash Commands + Cursor 填充
 
-**创建自定义模板**：
+Spec Kit 提供的 slash commands 可以直接在 Cursor Agent 对话中使用，自动生成规范化的文档结构。
 
-```bash
-# 创建符合项目规范的模板
-cat > specs/templates/requirements.md << 'EOF'
-# Requirements: {{feature_name}}
+### 2. 使用 Cursor 生成 + /speckit.checklist 验证
 
-*Generated by Speckit*
-*Aligned with IDRM Spec v2.0*
-
-## Overview
-{{description}}
-
-## User Stories
-<!-- Use AS a/I WANT/SO THAT format -->
-
-## Acceptance Criteria
-<!-- Use EARS notation: WHEN...THE SYSTEM SHALL... -->
-
-## Business Rules
-<!-- Business-level rules only, no technical details -->
-
-## Data Considerations
-<!-- Data that needs to be persisted, not schema -->
-EOF
-
-# 使用模板
-speckit generate requirements tag-management --template custom
 ```
-
-**然后用 Cursor 填充**。
-
----
-
-### 2. 使用 Cursor 生成 + Speckit 验证
-
-```bash
 # Cursor 快速生成
-# → Speckit validate
+# → /speckit.checklist 验证
 # → Cursor 修正
-# → Speckit validate
+# → /speckit.checklist 验证
 # → 通过
 ```
 
 这样保证生成的内容符合规范。
 
----
+### 3. 使用 /speckit.analyze 分析代码质量
 
-### 3. 使用 Speckit 追踪 + Cursor 实现
-
-```bash
-# 每完成一个Task
-speckit track tag-management --task "Model Layer" --status completed
-
-# Speckit 会更新进度
-# Cursor 继续下一个Task
 ```
+/speckit.analyze
 
----
-
-### 4. 使用 Speckit 报告 + Cursor 优化
-
-```bash
-# Speckit 生成报告
-speckit report tag-management
-
-# 发现问题（如覆盖率不足）
-# 使用 Cursor 生成补充测试
+分析当前代码的质量指标，给出改进建议。
 ```
 
 ---
 
 ## 🎯 工具职责分工
 
-### Speckit 负责
+### Spec Kit 负责
 
-- ✅ 规范化文档结构
-- ✅ 验证文档符合标准
-- ✅ 追踪实现进度
-- ✅ 生成报告和矩阵
+- ✅ 规范化文档结构 (Slash Commands)
+- ✅ 引导开发流程 (SDD Workflow)
+- ✅ 验证规范依从性 (Checklist)
 - ✅ 团队协作和审计
 
 ### Cursor Agent 负责
@@ -702,24 +417,46 @@ speckit report tag-management
 |------|---------|---------|---------|---------|------|
 | 纯手动 | 60min | 90min | 40min | 8h | **10.5h** |
 | Cursor | 30min | 40min | 20min | 5h | **6.5h** |
-| **Speckit+Cursor** | **20min** | **30min** | **15min** | **4h** | **5h** |
+| **Spec Kit+Cursor** | **20min** | **30min** | **15min** | **4h** | **5h** |
 
 **优势**：
-- 框架生成快（Speckit）
+- 框架生成快（Spec Kit Slash Commands）
 - 内容填充快（Cursor）
-- 验证自动化（Speckit）
-- 追踪可视化（Speckit）
+- 流程引导（SDD Workflow）
+- 验证自动化（Checklist）
+
+---
+
+## 📚 Spec Kit 命令参考
+
+### Specify CLI 命令
+| 命令 | 用途 |
+| :--- | :--- |
+| `specify init . --ai cursor-agent` | 初始化项目（Cursor 支持） |
+| `specify check` | 检查环境 |
+
+### Slash Commands (Cursor Agent 对话中使用)
+| 命令 | 用途 |
+| :--- | :--- |
+| `/speckit.constitution` | 创建项目原则 |
+| `/speckit.specify` | 创建需求规范 |
+| `/speckit.clarify` | 澄清规范问题 |
+| `/speckit.plan` | 创建技术方案 |
+| `/speckit.tasks` | 拆分任务 |
+| `/speckit.implement` | 执行实现 |
+| `/speckit.checklist` | 验证规范依从性 |
+| `/speckit.analyze` | 分析代码质量 |
 
 ---
 
 ## 🎯 总结
 
-### Speckit + Cursor 的完美配合
+### Spec Kit + Cursor 的完美配合
 
-1. **Speckit** 提供结构和规范
-   - 标准化文档框架
+1. **Spec Kit** 提供结构和规范
+   - 标准化文档框架 (Slash Commands)
+   - 开发流程引导 (SDD Workflow)
    - 自动验证机制
-   - 进度追踪
 
 2. **Cursor** 提供内容和实现
    - 快速填充文档
@@ -740,4 +477,6 @@ speckit report tag-management
 
 ---
 
-**Speckit + Cursor = 规范化 + 高效率！** 🚀
+**官方文档**：[github/spec-kit](https://github.com/github/spec-kit)
+
+**Spec Kit + Cursor = 规范化 + 高效率！** 🚀
