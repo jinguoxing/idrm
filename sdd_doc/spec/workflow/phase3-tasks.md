@@ -35,5 +35,18 @@
 
 参考：`../quality/quality-gates.md#gate-3`
 
+---
+
+## ⚠️ 人工检查点
+
+> **AI MUST STOP HERE**
+
+完成 Phase 3 后：
+1. 向用户展示生成的 `tasks.md` 任务列表
+2. 等待用户审批后再继续 Phase 4
+3. **禁止自动进入 Phase 4**
+
+---
+
 ## 下一步
-→ Phase 4: Implement
+→ Phase 4: Implement (需用户确认)

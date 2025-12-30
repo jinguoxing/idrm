@@ -207,5 +207,18 @@ Phase 2: 生成Design
 
 参考：`../quality/quality-gates.md#gate-2`
 
+---
+
+## ⚠️ 人工检查点
+
+> **AI MUST STOP HERE**
+
+完成 Phase 2 后：
+1. 向用户展示生成的 `design.md`、`.api` 和 `.sql` 文件
+2. 等待用户审批后再继续 Phase 3
+3. **禁止自动进入 Phase 3**
+
+---
+
 ## 下一步
-→ Phase 3: Tasks
+→ Phase 3: Tasks (需用户确认)

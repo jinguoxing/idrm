@@ -96,6 +96,18 @@ Phase 1: 生成Requirements
 
 参考：`../quality/quality-gates.md#gate-1`
 
-## 下一步
+---
 
-→ Phase 2: Design（技术方案设计）
+## ⚠️ 人工检查点
+
+> **AI MUST STOP HERE**
+
+完成 Phase 1 后：
+1. 向用户展示生成的 `requirements.md` 内容
+2. 等待用户审批后再继续 Phase 2
+3. **禁止自动进入 Phase 2**
+
+---
+
+## 下一步
+→ Phase 2: Design (需用户确认)

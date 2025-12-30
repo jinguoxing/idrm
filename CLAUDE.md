@@ -46,10 +46,36 @@ Before any development work, you **MUST** read and understand the project specif
 
 ```
 Phase 0: Context    → Understand specs and prepare environment
+   ⚠️ STOP - Wait for user confirmation
 Phase 1: Specify    → Define business requirements (EARS notation)
+   ⚠️ STOP - Wait for user confirmation
 Phase 2: Design     → Create technical solution
+   ⚠️ STOP - Wait for user confirmation
 Phase 3: Tasks      → Break down into <50 line tasks
+   ⚠️ STOP - Wait for user confirmation
 Phase 4: Implement  → Code, test, and verify
+```
+
+### ⚠️ CRITICAL: Agent Behavior Rules
+
+> **YOU MUST FOLLOW THESE RULES**
+
+1. **ONE PHASE AT A TIME**: Execute only ONE phase per conversation turn
+2. **WAIT FOR APPROVAL**: After completing a phase, STOP and ask for user confirmation
+3. **NO AUTO-CONTINUE**: NEVER automatically proceed to the next phase
+4. **EXPLICIT OUTPUT**: After each phase, list your outputs and ask "Continue to Phase X?"
+
+**Example Response After Phase 0:**
+```
+✅ **Phase 0: Context Complete**
+
+**What I understood:**
+- Project uses Go-Zero microservices
+- Follows Handler→Logic→Model architecture
+- Uses dual ORM (GORM + SQLx)
+
+**Ready for Phase 1: Specify**
+Shall I proceed to Phase 1 to define business requirements?
 ```
 
 ### Phase 0: Context
@@ -58,6 +84,7 @@ Phase 4: Implement  → Code, test, and verify
 2. Understand related architecture specs
 3. Review coding standards
 4. Confirm development environment is ready
+**⚠️ STOP HERE and report to user**
 
 ### Phase 1: Specify (Requirements)
 **Focus**: Business requirements ONLY, NO technical details

@@ -47,5 +47,30 @@ claude --files "sdd_doc/spec/core/*.md" \
 - [ ] 熟悉编码规范
 - [ ] 开发环境就绪
 
+---
+
+## ⚠️ 人工检查点
+
+> **AI MUST STOP HERE**
+
+完成 Phase 0 后：
+1. 向用户汇报已阅读的规范和理解的要点
+2. 等待用户确认后再继续 Phase 1
+3. **禁止自动进入 Phase 1**
+
+**输出示例**:
+```
+✅ Phase 0: Context 完成
+
+已阅读规范:
+- project-charter.md: 项目使用 Go-Zero 微服务架构
+- layered-architecture.md: 遵循 Handler→Logic→Model 三层
+- dual-orm-pattern.md: 使用 GORM + SQLx 双 ORM
+
+是否继续执行 Phase 1: Specify？
+```
+
+---
+
 ## 下一步
-→ Phase 1: Specify
+→ Phase 1: Specify (需用户确认)
