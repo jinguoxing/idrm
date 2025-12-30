@@ -59,8 +59,8 @@ cd /path/to/idrm
 specify init . --ai cursor-agent
 
 # 这会创建：
-# .speckit/          # Spec Kit 配置
-# 以及必要的 slash commands 配置
+# .specify/          # Spec Kit 配置和模板
+# .github/           # AI Agent 的 prompt 文件
 ```
 
 ### 3. 配置 Spec Kit
@@ -77,7 +77,7 @@ specify init . --ai cursor-agent
 
 ## 📝 Phase 0: Context (15分钟)
 
-### Step 1: 使用 /speckit.constitution 建立项目原则
+### Step 1: 阅读项目规范
 
 在 Cursor 中打开项目：
 
@@ -85,29 +85,22 @@ specify init . --ai cursor-agent
 cursor .
 ```
 
-**打开 Cursor Agent (Cmd+L)**，使用 Spec Kit 的 slash command：
-
-```
-/speckit.constitution 请创建项目开发原则，包含：
-- 遵循 Go-Zero 微服务架构
-- 使用 Handler→Logic→Model 分层
-- 函数行数不超过50行
-- 使用中文注释
-- 测试覆盖率大于80%
-```
-
-这会生成 `constitution.md`，定义项目的开发准则。
-
-### Step 2: 阅读项目规范
+**打开 Cursor Agent (Cmd+L)**，阅读已有的项目规范：
 
 ```
 请阅读以下项目规范文件：
 @CLAUDE.md
 @sdd_doc/spec/core/workflow.md
 @sdd_doc/spec/architecture/layered-architecture.md
+@sdd_doc/spec/constitution.md
 
-总结关键规范要求。
+总结关键规范要求，包括：
+- 架构原则（Handler→Logic→Model 分层）
+- 编码规范（函数行数限制、注释要求）
+- 质量要求（测试覆盖率）
 ```
+
+> **注意**: 项目已有 `constitution.md`，无需使用 `/speckit.constitution` 创建。
 
 ---
 
