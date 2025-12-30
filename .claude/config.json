@@ -1,7 +1,7 @@
 {
     "project": "IDRM",
     "spec_version": "2.1.0",
-    "spec_root": "private_doc/spec",
+    "spec_root": "sdd_doc/spec",
     "description": "IDRM项目的Claude Skills和Sub-agents配置，基于5阶段工作流",
     "skills_directory": ".claude/skills",
     "agents_directory": ".claude/agents",
@@ -98,30 +98,30 @@
     },
     "spec_references": {
         "workflow": {
-            "phase0": "private_doc/spec/workflow/phase0-context.md",
-            "phase1": "private_doc/spec/workflow/phase1-specify.md",
-            "phase2": "private_doc/spec/workflow/phase2-design.md",
-            "phase3": "private_doc/spec/workflow/phase3-tasks.md",
-            "phase4": "private_doc/spec/workflow/phase4-implement.md"
+            "phase0": "sdd_doc/spec/workflow/phase0-context.md",
+            "phase1": "sdd_doc/spec/workflow/phase1-specify.md",
+            "phase2": "sdd_doc/spec/workflow/phase2-design.md",
+            "phase3": "sdd_doc/spec/workflow/phase3-tasks.md",
+            "phase4": "sdd_doc/spec/workflow/phase4-implement.md"
         },
         "architecture": {
-            "layered": "private_doc/spec/architecture/layered-architecture.md",
-            "dual_orm": "private_doc/spec/architecture/dual-orm-pattern.md"
+            "layered": "sdd_doc/spec/architecture/layered-architecture.md",
+            "dual_orm": "sdd_doc/spec/architecture/dual-orm-pattern.md"
         },
         "coding_standards": {
-            "go_style": "private_doc/spec/coding-standards/go-style-guide.md",
-            "error_handling": "private_doc/spec/coding-standards/error-handling.md",
-            "testing": "private_doc/spec/coding-standards/testing-standards.md"
+            "go_style": "sdd_doc/spec/coding-standards/go-style-guide.md",
+            "error_handling": "sdd_doc/spec/coding-standards/error-handling.md",
+            "testing": "sdd_doc/spec/coding-standards/testing-standards.md"
         },
         "quality": {
-            "gates": "private_doc/spec/quality/quality-gates.md",
-            "review_checklist": "private_doc/spec/quality/code-review-checklist.md"
+            "gates": "sdd_doc/spec/quality/quality-gates.md",
+            "review_checklist": "sdd_doc/spec/quality/code-review-checklist.md"
         }
     },
     "ai_guide_references": {
-        "phase1_guide": "private_doc/ai-guide-v2/03-workflow/phase1-详细操作.md",
-        "phase2_guide": "private_doc/ai-guide-v2/03-workflow/phase2-详细操作.md",
-        "phase3_guide": "private_doc/ai-guide-v2/03-workflow/phase3-详细操作.md",
-        "phase4_guide": "private_doc/ai-guide-v2/03-workflow/phase4-详细操作.md"
+        "phase1_guide": "sdd_doc/ai-guide-v2/03-workflow/phase1-详细操作.md",
+        "phase2_guide": "sdd_doc/ai-guide-v2/03-workflow/phase2-详细操作.md",
+        "phase3_guide": "sdd_doc/ai-guide-v2/03-workflow/phase3-详细操作.md",
+        "phase4_guide": "sdd_doc/ai-guide-v2/03-workflow/phase4-详细操作.md"
     }
 }

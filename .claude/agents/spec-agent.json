@@ -7,9 +7,9 @@
         "primary_skill": "idrm-specify",
         "supporting_skills": [],
         "spec_knowledge": [
-            "private_doc/spec/workflow/phase1-specify.md",
-            "private_doc/spec/core/project-charter.md",
-            "private_doc/ai-guide-v2/03-workflow/phase1-详细操作.md"
+            "sdd_doc/spec/workflow/phase1-specify.md",
+            "sdd_doc/spec/core/project-charter.md",
+            "sdd_doc/ai-guide-v2/03-workflow/phase1-详细操作.md"
         ]
     },
     "personality": {

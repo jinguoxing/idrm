@@ -7,11 +7,11 @@
         "primary_skill": "idrm-design",
         "supporting_skills": [],
         "spec_knowledge": [
-            "private_doc/spec/workflow/phase2-design.md",
-            "private_doc/spec/architecture/layered-architecture.md",
-            "private_doc/spec/architecture/dual-orm-pattern.md",
-            "private_doc/spec/coding-standards/go-style-guide.md",
-            "private_doc/ai-guide-v2/03-workflow/phase2-详细操作.md"
+            "sdd_doc/spec/workflow/phase2-design.md",
+            "sdd_doc/spec/architecture/layered-architecture.md",
+            "sdd_doc/spec/architecture/dual-orm-pattern.md",
+            "sdd_doc/spec/coding-standards/go-style-guide.md",
+            "sdd_doc/ai-guide-v2/03-workflow/phase2-详细操作.md"
         ]
     },
     "personality": {

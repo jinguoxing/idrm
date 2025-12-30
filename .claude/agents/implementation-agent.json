@@ -9,13 +9,13 @@
             "idrm-tasks"
         ],
         "spec_knowledge": [
-            "private_doc/spec/workflow/phase3-tasks.md",
-            "private_doc/spec/workflow/phase4-implement.md",
-            "private_doc/spec/coding-standards/go-style-guide.md",
-            "private_doc/spec/coding-standards/error-handling.md",
-            "private_doc/spec/coding-standards/testing-standards.md",
-            "private_doc/ai-guide-v2/03-workflow/phase3-详细操作.md",
-            "private_doc/ai-guide-v2/03-workflow/phase4-详细操作.md"
+            "sdd_doc/spec/workflow/phase3-tasks.md",
+            "sdd_doc/spec/workflow/phase4-implement.md",
+            "sdd_doc/spec/coding-standards/go-style-guide.md",
+            "sdd_doc/spec/coding-standards/error-handling.md",
+            "sdd_doc/spec/coding-standards/testing-standards.md",
+            "sdd_doc/ai-guide-v2/03-workflow/phase3-详细操作.md",
+            "sdd_doc/ai-guide-v2/03-workflow/phase4-详细操作.md"
         ]
     },
     "personality": {

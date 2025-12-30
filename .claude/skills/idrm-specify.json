@@ -3,8 +3,8 @@
     "version": "2.1.0",
     "description": "生成业务需求规范，遵循IDRM Spec v2.1.0 - 聚焦What和Why，不涉及技术实现",
     "category": "requirements",
-    "spec_reference": "private_doc/spec/workflow/phase1-specify.md",
-    "guide_reference": "private_doc/ai-guide-v2/03-workflow/phase1-详细操作.md",
+    "spec_reference": "sdd_doc/spec/workflow/phase1-specify.md",
+    "guide_reference": "sdd_doc/ai-guide-v2/03-workflow/phase1-详细操作.md",
     "inputs": {
         "feature_description": {
             "type": "string",
@@ -26,7 +26,7 @@
     },
     "prompt_template": {
         "system": "你是一个需求分析专家，遵循IDRM Spec v2.1.0规范。核心原则：'Focus on the what and why, not the tech stack'。只关注业务需求，不涉及技术实现细节。",
-        "user": "为以下功能生成Phase 1 Requirements：\n{{feature_description}}\n\n请严格按照以下结构生成：\n\n## Overview\n（2-3句话概述）\n\n## User Stories\nAS a {角色}\nI WANT {功能}\nSO THAT {价值/目标}\n\n（至少3个User Stories）\n\n## Acceptance Criteria (EARS Notation)\nWHEN {触发条件/事件}\nTHE SYSTEM SHALL {期望行为}\n\n要求：\n- 覆盖正常流程（Happy Path）\n- 覆盖所有参数验证情况\n- 覆盖业务规则违反情况\n- 覆盖边界情况\n\n## Business Rules\n业务规则和约束（不涉及技术实现）\n包含：\n- 业务流程规则\n- 数据约束（唯一性、范围、层级等）\n- 业务逻辑限制\n\n不包含：\n- 技术架构（Handler/Logic/Model）\n- ORM选择\n- 编码规范\n- 数据库表结构\n\n## Data Considerations\n需要持久化的数据描述（不是SQL表结构）：\n- 需要存储的信息\n- 数据关系（用文字描述）\n\n## Open Questions\n待澄清的问题\n\n---\n\n参考规范：\n@private_doc/spec/workflow/phase1-specify.md\n@private_doc/ai-guide-v2/03-workflow/phase1-详细操作.md",
+        "user": "为以下功能生成Phase 1 Requirements：\n{{feature_description}}\n\n请严格按照以下结构生成：\n\n## Overview\n（2-3句话概述）\n\n## User Stories\nAS a {角色}\nI WANT {功能}\nSO THAT {价值/目标}\n\n（至少3个User Stories）\n\n## Acceptance Criteria (EARS Notation)\nWHEN {触发条件/事件}\nTHE SYSTEM SHALL {期望行为}\n\n要求：\n- 覆盖正常流程（Happy Path）\n- 覆盖所有参数验证情况\n- 覆盖业务规则违反情况\n- 覆盖边界情况\n\n## Business Rules\n业务规则和约束（不涉及技术实现）\n包含：\n- 业务流程规则\n- 数据约束（唯一性、范围、层级等）\n- 业务逻辑限制\n\n不包含：\n- 技术架构（Handler/Logic/Model）\n- ORM选择\n- 编码规范\n- 数据库表结构\n\n## Data Considerations\n需要持久化的数据描述（不是SQL表结构）：\n- 需要存储的信息\n- 数据关系（用文字描述）\n\n## Open Questions\n待澄清的问题\n\n---\n\n参考规范：\n@sdd_doc/spec/workflow/phase1-specify.md\n@sdd_doc/ai-guide-v2/03-workflow/phase1-详细操作.md",
         "examples": [
             {
                 "feature": "资源分类管理",

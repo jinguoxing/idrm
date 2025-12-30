@@ -18,24 +18,24 @@ Before any development work, you **MUST** read and understand the project specif
 
 ### Core Specifications
 ```bash
-@private_doc/spec/core/project-charter.md    # Project mission & principles
-@private_doc/spec/core/tech-stack.md          # Technology stack
-@private_doc/spec/core/workflow.md            # 5-phase workflow (CRITICAL)
+@sdd_doc/spec/core/project-charter.md    # Project mission & principles
+@sdd_doc/spec/core/tech-stack.md          # Technology stack
+@sdd_doc/spec/core/workflow.md            # 5-phase workflow (CRITICAL)
 ```
 
 ### Architecture Specifications
 ```bash
-@private_doc/spec/architecture/layered-architecture.md    # Handler→Logic→Model
-@private_doc/spec/architecture/dual-orm-pattern.md        # GORM + SQLx usage
-@private_doc/spec/architecture/api-design-guide.md        # RESTful standards
-@private_doc/spec/architecture/error-handling.md          # Error patterns
+@sdd_doc/spec/architecture/layered-architecture.md    # Handler→Logic→Model
+@sdd_doc/spec/architecture/dual-orm-pattern.md        # GORM + SQLx usage
+@sdd_doc/spec/architecture/api-design-guide.md        # RESTful standards
+@sdd_doc/spec/architecture/error-handling.md          # Error patterns
 ```
 
 ### Workflow Specifications
 ```bash
-@private_doc/spec/workflow/phase1-specify.md              # Requirements (EARS)
-@private_doc/spec/workflow/phase2-design.md               # Technical design
-@private_doc/spec/workflow/ears-notation-guide.md         # EARS详解
+@sdd_doc/spec/workflow/phase1-specify.md              # Requirements (EARS)
+@sdd_doc/spec/workflow/phase2-design.md               # Technical design
+@sdd_doc/spec/workflow/ears-notation-guide.md         # EARS详解
 ```
 
 ---
@@ -54,7 +54,7 @@ Phase 4: Implement  → Code, test, and verify
 
 ### Phase 0: Context
 **Before starting any work:**
-1. Read `private_doc/spec/core/project-charter.md`
+1. Read `sdd_doc/spec/core/project-charter.md`
 2. Understand related architecture specs
 3. Review coding standards
 4. Confirm development environment is ready
@@ -86,7 +86,7 @@ WHEN 用户提交的分类名称为空
 THE SYSTEM SHALL 返回400错误和"名称不能为空"的错误信息
 ```
 
-**Reference**: `@private_doc/spec/workflow/ears-notation-guide.md`
+**Reference**: `@sdd_doc/spec/workflow/ears-notation-guide.md`
 
 ### Phase 2: Design (Technical Solution)
 **Focus**: Technical implementation details
@@ -149,7 +149,7 @@ HTTP Request → Handler → Logic → Model → Database
    - Choose appropriate ORM
    - Return data models
 
-**Reference**: `@private_doc/spec/architecture/layered-architecture.md`
+**Reference**: `@sdd_doc/spec/architecture/layered-architecture.md`
 
 ### Dual ORM Pattern
 
@@ -165,7 +165,7 @@ HTTP Request → Handler → Logic → Model → Database
 - Direct SQL control
 - Lightweight operations
 
-**Reference**: `@private_doc/spec/architecture/dual-orm-pattern.md`
+**Reference**: `@sdd_doc/spec/architecture/dual-orm-pattern.md`
 
 ---
 
@@ -189,7 +189,7 @@ HTTP Request → Handler → Logic → Model → Database
 - **Cursor**: Daily development and refactoring
 - **Claude CLI**: Batch processing and CI/CD
 
-**Reference**: `@private_doc/spec/core/tech-stack.md`
+**Reference**: `@sdd_doc/spec/core/tech-stack.md`
 
 ---
 
@@ -214,7 +214,7 @@ idrm/
 │       ├── gorm_dao.go          # GORM implementation
 │       └── sqlx_model.go        # SQLx implementation
 ├── common/                       # Shared utilities
-└── private_doc/
+└── sdd_doc/
     └── spec/                    # Project specifications (READ FIRST!)
         ├── core/                # Core specs
         ├── architecture/        # Architecture specs
@@ -280,7 +280,7 @@ if err != nil {
 }
 ```
 
-**Reference**: `@private_doc/spec/coding-standards/go-style-guide.md`
+**Reference**: `@sdd_doc/spec/coding-standards/go-style-guide.md`
 
 ---
 
@@ -316,7 +316,7 @@ go test -cover ./...
 golangci-lint run
 ```
 
-**Reference**: `@private_doc/spec/quality/quality-gates.md`
+**Reference**: `@sdd_doc/spec/quality/quality-gates.md`
 
 ---
 
@@ -408,7 +408,7 @@ DELETE /api/v1/categories/:id   # Delete
 - `409`: Conflict
 - `500`: Internal server error
 
-**Reference**: `@private_doc/spec/architecture/api-design-guide.md`
+**Reference**: `@sdd_doc/spec/architecture/api-design-guide.md`
 
 ---
 
@@ -434,7 +434,7 @@ if err != nil {
 return errorx.NewCodeError(40001, "分类名称已存在")
 ```
 
-**Reference**: `@private_doc/spec/architecture/error-handling.md`
+**Reference**: `@sdd_doc/spec/architecture/error-handling.md`
 
 ---
 
@@ -478,7 +478,7 @@ func TestCreateCategory(t *testing.T) {
 }
 ```
 
-**Reference**: `@private_doc/spec/coding-standards/testing-standards.md`
+**Reference**: `@sdd_doc/spec/coding-standards/testing-standards.md`
 
 ---
 
@@ -509,8 +509,8 @@ func TestCreateCategory(t *testing.T) {
 When requesting AI assistance, structure your prompt:
 
 ```
-@private_doc/spec/workflow/phase{X}-{name}.md
-@private_doc/spec/architecture/{relevant-spec}.md
+@sdd_doc/spec/workflow/phase{X}-{name}.md
+@sdd_doc/spec/architecture/{relevant-spec}.md
 
 Context: [Describe what you're working on]
 
@@ -628,16 +628,16 @@ SERVICE_PORT=8888
 ### Key Specification Files
 | Topic | File |
 |-------|------|
-| Project Mission | `private_doc/spec/core/project-charter.md` |
-| Workflow | `private_doc/spec/core/workflow.md` |
-| Architecture | `private_doc/spec/architecture/layered-architecture.md` |
-| EARS Guide | `private_doc/spec/workflow/ears-notation-guide.md` |
-| Quality Gates | `private_doc/spec/quality/quality-gates.md` |
+| Project Mission | `sdd_doc/spec/core/project-charter.md` |
+| Workflow | `sdd_doc/spec/core/workflow.md` |
+| Architecture | `sdd_doc/spec/architecture/layered-architecture.md` |
+| EARS Guide | `sdd_doc/spec/workflow/ears-notation-guide.md` |
+| Quality Gates | `sdd_doc/spec/quality/quality-gates.md` |
 
 ### Contact
 - Tech Lead: [Name]
-- Architecture Questions: See `private_doc/spec/architecture/`
-- Workflow Questions: See `private_doc/spec/workflow/`
+- Architecture Questions: See `sdd_doc/spec/architecture/`
+- Workflow Questions: See `sdd_doc/spec/workflow/`
 
 ---
 

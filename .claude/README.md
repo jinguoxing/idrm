@@ -145,11 +145,11 @@ claude --agent review-agent \\
 
 所有skills和agents都基于以下规范：
 
-- `private_doc/spec/workflow/` - 5阶段工作流规范
-- `private_doc/spec/architecture/` - 架构规范
-- `private_doc/spec/coding-standards/` - 编码规范
-- `private_doc/spec/quality/` - 质量规范
-- `private_doc/ai-guide-v2/` - AI编程指南
+- `sdd_doc/spec/workflow/` - 5阶段工作流规范
+- `sdd_doc/spec/architecture/` - 架构规范
+- `sdd_doc/spec/coding-standards/` - 编码规范
+- `sdd_doc/spec/quality/` - 质量规范
+- `sdd_doc/ai-guide-v2/` - AI编程指南
 
 ## ⚙️ 配置说明
 

@@ -7,9 +7,9 @@
         "primary_skill": "idrm-review",
         "supporting_skills": [],
         "spec_knowledge": [
-            "private_doc/spec/quality/quality-gates.md",
-            "private_doc/spec/quality/code-review-checklist.md",
-            "private_doc/spec/coding-standards/"
+            "sdd_doc/spec/quality/quality-gates.md",
+            "sdd_doc/spec/quality/code-review-checklist.md",
+            "sdd_doc/spec/coding-standards/"
         ]
     },
     "personality": {

@@ -1,0 +1,17 @@
+{
+    "version": "1.0.0",
+    "templates": {
+        "requirements": "sdd_doc/spec/templates/requirements.md",
+        "design": "sdd_doc/spec/templates/design.md",
+        "tasks": "sdd_doc/spec/templates/tasks.md",
+        "api": "sdd_doc/spec/templates/api.api",
+        "schema": "sdd_doc/spec/templates/schema.sql"
+    },
+    "validation": {
+        "require_ears": true,
+        "require_user_stories": true,
+        "require_api_contract": true,
+        "require_ddl_file": true,
+        "max_function_lines": 50
+    }
+}
