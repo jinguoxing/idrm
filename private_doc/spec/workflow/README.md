@@ -19,6 +19,7 @@ Phase 0: Context → Phase 1: Specify → Phase 2: Design → Phase 3: Tasks →
 
 ### 扩展指南
 - [ears-notation-guide.md](ears-notation-guide.md) - EARS格式详解（Phase 1扩展）
+- [phase-optimization.md](phase-optimization.md) - 功能优化工作流（三种方案）
 - [tool-mapping.md](tool-mapping.md) - 工具映射关系
 
 ## 快速开始
