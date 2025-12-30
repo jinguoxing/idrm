@@ -7,14 +7,51 @@ You are an AI assistant working on the IDRM project, an intelligent data resourc
 - **Tech Stack**: Go 1.21+, Go-Zero v1.9+, MySQL 8.0, Redis, Kafka
 - **Architecture**: Layered (Handler → Logic → Model)
 - **ORM**: Dual ORM (GORM + SQLx)
-- **Specs Location**: `private_doc/spec/`
+- **Spec Kit**: `.specify/` (官方 Spec Kit 结构)
+
+## Key Files
+
+| 文件 | 用途 |
+|------|------|
+| `.specify/memory/constitution.md` | 项目宪章（核心原则） |
+| `.specify/templates/spec-template.md` | 需求规范模板 |
+| `.specify/templates/plan-template.md` | 技术设计模板 |
+| `.specify/templates/tasks-template.md` | 任务拆分模板 |
+| `.github/prompts/` | AI 引导文件 |
+| `CLAUDE.md` | 项目概览和规范索引 |
 
 ## Core Principles
 
-1. **Always read specs first**: Before any implementation, check `private_doc/spec/constitution.md`
+1. **Always read specs first**: Check `.specify/memory/constitution.md`
 2. **Follow 4-phase workflow**: Specify → Plan → Tasks → Implement
-3. **Layered architecture**: Strictly follow Handler → Logic → Model separation
-4. **Dual ORM pattern**: Use Model interface, support both GORM and SQLx
+3. **Layered architecture**: Strictly follow Handler → Logic → Model
+4. **Dual ORM pattern**: Use Model interface, support GORM and SQLx
+5. **<50 lines per function**: Keep functions small and focused
+
+## 4-Phase Workflow
+
+### Phase 1: Specify
+- Use `/speckit.specify` command
+- Reference template: `@.specify/templates/spec-template.md`
+- Output: `specs/{feature}/spec.md`
+- Format: EARS notation + User Stories
+
+### Phase 2: Plan
+- Use `/speckit.plan` command
+- Reference template: `@.specify/templates/plan-template.md`
+- Output: `specs/{feature}/plan.md`
+- Include: Architecture, DDL, API, Mermaid diagrams
+
+### Phase 3: Tasks
+- Use `/speckit.tasks` command
+- Reference template: `@.specify/templates/tasks-template.md`
+- Output: `specs/{feature}/tasks.md`
+- Each task < 50 lines
+
+### Phase 4: Implement
+- Use `/speckit.implement` command
+- Follow tasks.md in order
+- Generate Model → Logic → Handler → Tests
 
 ## Architecture Rules
 
@@ -38,6 +75,18 @@ You are an AI assistant working on the IDRM project, an intelligent data resourc
 - ✅ Transaction management
 - ❌ NO business logic
 
+## File Structure
+
+```
+model/{module}/{table}/
+├── interface.go    # Model 接口定义
+├── types.go        # 数据结构
+├── vars.go         # 常量和错误
+├── factory.go      # ORM 工厂
+├── gorm_dao.go     # GORM 实现
+└── sqlx_model.go   # SQLx 实现
+```
+
 ## Coding Standards
 
 ### File Naming
@@ -59,22 +108,25 @@ You are an AI assistant working on the IDRM project, an intelligent data resourc
 
 ## Before Generating Code
 
-1. Ask me to confirm the specification
-2. Show me the technical plan
-3. Break down into tasks (<50 lines each)
-4. Implement incrementally
+1. ⏸️ Read relevant templates in `.specify/templates/`
+2. ⏸️ Confirm requirements with user
+3. ⏸️ Show technical plan
+4. ⏸️ Break into tasks (< 50 lines each)
+5. ✅ Implement incrementally
 
 ## References
 
-- Constitution: `private_doc/spec/constitution.md`
-- Layered Architecture: `private_doc/spec/architecture/layered-architecture.md`
-- Dual ORM: `private_doc/spec/architecture/dual-orm-pattern.md`
-- Go Style: `private_doc/spec/coding-standards/go-style-guide.md`
+- Constitution: `.specify/memory/constitution.md`
+- Layered Architecture: `sdd_doc/spec/architecture/layered-architecture.md`
+- Dual ORM: `sdd_doc/spec/architecture/dual-orm-pattern.md`
+- Go Style: `sdd_doc/spec/coding-standards/go-style-guide.md`
+- API Design: `sdd_doc/spec/architecture/api-design-guide.md`
 
 ## Quality Standards
 
-- ✅ Compile successfully
-- ✅ Pass tests
+- ✅ Compile successfully (`go build ./...`)
+- ✅ Pass tests (`go test ./...`)
 - ✅ No golangci-lint errors
 - ✅ Functions < 50 lines
 - ✅ All public items have comments
+- ✅ Test coverage > 80%
