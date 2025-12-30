@@ -181,7 +181,7 @@ $ claude
 ```text
 开始 Phase 4。首先生成代码框架。
 
-1. 运行 `goctl api go -api specs/features/tag-management/tag-management.api -dir api/ --style=goZero`。
+1. 运行 `goctl api go -api api/doc/resource_catalog/tag.api -dir api/ --style=goZero`。
 2. 运行 `goctl model mysql ddl -src migrations/resource_catalog/tags.sql -dir model/resource_catalog/tag/ --style=goZero`。
 3. 检查生成的文件结构。
 4. 确认无报错后，继续实现业务逻辑。

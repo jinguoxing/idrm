@@ -132,7 +132,9 @@ CREATE TABLE `tags` (
 
 每个功能需要定义 go-zero 格式的 API 文件，作为前后端接口契约。
 
-**文件位置**: `specs/features/{name}/{name}.api`
+**文件位置**: `api/doc/{module}/{feature}.api`
+
+**示例**: `api/doc/resource_catalog/tag.api`
 
 **格式要求**:
 ```api

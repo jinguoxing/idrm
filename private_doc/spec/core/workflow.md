@@ -241,7 +241,7 @@ type Model interface { ... }
 ### 活动
 1. **生成 API 代码框架**
    ```bash
-   goctl api go -api specs/features/{name}/{name}.api -dir api/ --style=goZero
+   goctl api go -api api/doc/{module}/{feature}.api -dir api/ --style=goZero
    ```
    - 生成 handler、types、routes 等基础代码
    - 不要手动修改 `types.go`（由 goctl 管理）
