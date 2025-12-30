@@ -2,6 +2,7 @@ package response
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"idrm/pkg/errorx"
@@ -182,10 +183,78 @@ func WriteJSON(w http.ResponseWriter, statusCode int, data interface{}) {
 // SuccessPage 分页成功响应
 func SuccessPage(w http.ResponseWriter, list interface{}, total int64, page int, pageSize int) {
 	data := map[string]interface{}{
-		"list":      list,
+		"entries":   list,
 		"total":     total,
 		"page":      page,
 		"page_size": pageSize,
 	}
 	Success(w, data)
+}
+
+// ============================================
+// go-frame 兼容函数
+// ============================================
+
+// ResOKJson 成功响应（直接返回data，不包装）
+// 兼容 go-frame: ginx.ResOKJson
+func ResOKJson(w http.ResponseWriter, data interface{}) {
+	if data == nil {
+		data = map[string]interface{}{}
+	}
+	WriteJSON(w, http.StatusOK, data)
+}
+
+// ResList 列表响应（直接返回，不包装）
+// 兼容 go-frame: ginx.ResList
+func ResList(w http.ResponseWriter, list interface{}, totalCount int64) {
+	if list == nil {
+		list = []interface{}{}
+	}
+	data := map[string]interface{}{
+		"entries":     list,
+		"total_count": totalCount,
+	}
+	WriteJSON(w, http.StatusOK, data)
+}
+
+// ResBadRequestJson 400错误响应
+// 兼容 go-frame: ginx.ResBadRequestJson
+func ResBadRequestJson(w http.ResponseWriter, err error) {
+	ResErrJsonWithCode(w, http.StatusBadRequest, err)
+}
+
+// ResErrJsonWithCode 指定HTTP状态码的错误响应
+// 兼容 go-frame: ginx.ResErrJsonWithCode
+func ResErrJsonWithCode(w http.ResponseWriter, statusCode int, err error) {
+	resp := buildHttpError(err)
+	WriteJSON(w, statusCode, resp)
+}
+
+// ResErrJson 错误响应
+// 兼容 go-frame: ginx.ResErrJson
+func ResErrJson(w http.ResponseWriter, err error) {
+	resp := buildHttpError(err)
+	WriteJSON(w, http.StatusBadRequest, resp)
+}
+
+// buildHttpError 构建 HttpError 结构
+func buildHttpError(err error) *HttpError {
+	if err == nil {
+		return &HttpError{
+			Code:        "idrm.common.ok",
+			Description: "成功",
+		}
+	}
+
+	if e, ok := err.(*errorx.CodeError); ok {
+		return &HttpError{
+			Code:        fmt.Sprintf("idrm.common.%d", e.GetCode()),
+			Description: e.GetMsg(),
+		}
+	}
+
+	return &HttpError{
+		Code:        "idrm.common.internal_error",
+		Description: err.Error(),
+	}
 }
