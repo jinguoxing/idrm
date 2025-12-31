@@ -680,7 +680,7 @@ git commit -m "feat: implement tag logic layer with tests"
 
 ```
 @api/internal/logic/resource_catalog/tag/createtaglogic.go
-@sdd_doc/spec/architecture/api-design-guide.md
+@sdd_doc/spec/architecture/api-service-guide.md
 
 执行 Task 10: 创建标签Handler
 

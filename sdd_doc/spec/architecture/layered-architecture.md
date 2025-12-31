@@ -634,7 +634,7 @@ A: 不推荐。应该在Logic层转换为`types.Resp`后返回，避免暴露内
 
 - [Constitution](../constitution.md) - 项目宪章
 - [双ORM模式](./dual-orm-pattern.md) - Model层双ORM实现
-- [API设计指南](./api-design-guide.md) - RESTful API规范
+- [API服务指南](./api-service-guide.md) - API服务开发规范
 
 ---
 

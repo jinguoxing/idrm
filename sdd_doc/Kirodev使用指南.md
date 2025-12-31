@@ -220,7 +220,7 @@ WHEN [condition] THE SYSTEM SHALL [behavior]
 - **总体规范**: `sdd_doc/spec/constitution.md`
 - **分层架构**: `sdd_doc/spec/architecture/layered-architecture.md`
 - **双ORM模式**: `sdd_doc/spec/architecture/dual-orm-pattern.md`
-- **API设计**: `sdd_doc/spec/architecture/api-design-guide.md`
+- **API服务**: `sdd_doc/spec/architecture/api-service-guide.md`
 - **Go风格**: `sdd_doc/spec/coding-standards/go-style-guide.md`
 - **命名规范**: `sdd_doc/spec/coding-standards/naming-conventions.md`
 - **错误处理**: `sdd_doc/spec/coding-standards/error-handling.md`

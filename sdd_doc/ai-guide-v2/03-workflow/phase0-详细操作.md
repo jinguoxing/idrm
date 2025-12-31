@@ -104,7 +104,7 @@
 #### 2.3 API设计规范
 
 ```
-打开：sdd_doc/spec/architecture/api-design-guide.md
+打开：sdd_doc/spec/architecture/api-service-guide.md
 
 快速浏览：
 - RESTful规范

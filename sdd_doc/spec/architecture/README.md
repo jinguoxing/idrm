@@ -12,7 +12,7 @@
 
 ### 专项设计
 
-- **[API设计指南](./api-design-guide.md)** - RESTful API规范和最佳实践
+- **[API设计指南](./api-service-guide.md)** - RESTful API规范和最佳实践
 - **[可观测性架构](./observability.md)** - 日志、追踪、指标的完整方案
 - **[数据流设计](./data-flow.md)** - 请求处理和数据传递流程
 
@@ -30,7 +30,7 @@
 ### 新人入门
 1. 先读 [分层架构](./layered-architecture.md)
 2. 再读 [双ORM模式](./dual-orm-pattern.md)
-3. 然后读 [API设计指南](./api-design-guide.md)
+3. 然后读 [API设计指南](./api-service-guide.md)
 
 ### 深入理解
 4. [微服务模式](./microservices-pattern.md)
