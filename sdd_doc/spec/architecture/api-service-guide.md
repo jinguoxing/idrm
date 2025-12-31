@@ -19,7 +19,7 @@
 
 ```bash
 # 生成 API 代码
-goctl api go -api api/doc/api.api -dir api/ --style=go_zero
+goctl api go -api api/doc/api.api -dir api/ --style=go_zero --type-group
 ```
 
 ### 文件覆盖规则
@@ -147,6 +147,50 @@ DB:
   Charset: utf8mb4
   MaxIdleConns: 10
   MaxOpenConns: 100
+```
+
+## API 入口文件
+
+**文件位置**: `api/doc/api.api`
+
+> ⚠️ **强制要求**：必须使用入口文件 `api.api` 执行 goctl 生成。  
+> 如果使用单个模块文件生成，**routes.go 会被覆盖**，导致其他模块路由丢失！
+
+api.api 是统一入口文件，通过 `import` 引入所有模块的 API 定义：
+
+```api
+syntax = "v1"
+
+// 导入通用类型
+import "base.api"
+
+// 导入各模块 API
+import "catalog/category.api"
+import "catalog/directory.api"
+import "auth/user.api"
+```
+
+### goctl 命令
+
+**始终使用入口文件执行生成**：
+
+```bash
+goctl api go -api api/doc/api.api -dir api/ --style=go_zero --type-group
+```
+
+### 模块 API 文件
+
+各模块 API 文件放在 `api/doc/{module}/` 目录下：
+
+```
+api/doc/
+├── api.api              # 入口文件（执行 goctl 用这个）
+├── base.api             # 通用类型
+├── catalog/
+│   ├── category.api
+│   └── directory.api
+└── auth/
+    └── user.api
 ```
 
 ---

@@ -68,13 +68,13 @@
 
 - [ ] T006 [US1] 创建 `api/doc/{module}/{feature}.api`
 - [ ] T007 [US1] 定义 Request/Response 类型
-- [ ] T008 [US1] 定义路由和 Handler
+- [ ] T008 [US1] 在 `api/doc/api.api` 入口文件中 import 新模块
 
 ### Step 2: 生成代码
 
 - [ ] T009 [US1] 运行 `goctl api go` 生成 Handler/Types
   ```bash
-  goctl api go -api api/doc/{module}/{feature}.api -dir api/ --style=go_zero
+  goctl api go -api api/doc/api.api -dir api/ --style=go_zero --type-group
   ```
 
 ### Step 3: 定义 DDL
