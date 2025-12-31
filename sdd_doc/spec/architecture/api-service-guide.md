@@ -19,7 +19,7 @@
 
 ```bash
 # 生成 API 代码
-goctl api go -api api/doc/api.api -dir api/ --style=goZero
+goctl api go -api api/doc/api.api -dir api/ --style=go_zero
 ```
 
 ### 文件覆盖规则

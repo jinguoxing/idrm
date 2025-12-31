@@ -1,154 +1,52 @@
 # Phase 2: Design (技术方案)
 
-> **Level**: MUST  
-> **Version**: 2.1.0  
-> **Updated**: Includes Technical Constraints and Data Model
+> **Version**: 3.0.0  
+> **Last Updated**: 2025-12-31
+
+---
 
 ## 目标
 
-基于Phase 1的业务需求，创建详细的技术实现方案。
+基于 Phase 1 的业务需求，创建详细的技术实现方案。
 
 ## 输入
-- Phase 1的requirements.md（业务需求）
 
-## 输出模板
+- Phase 1 的 `specs/{feature}/spec.md`
 
-创建 `specs/features/{name}/design.md`：
+## 输出
 
-```markdown
-# Design: {功能名}
+创建 `specs/{feature}/plan.md`
 
-## Architecture Overview
-遵循IDRM分层架构：Handler → Logic → Model
+模板参考：`.specify/templates/plan-template.md`
 
-## ORM Strategy
-GORM vs SQLx选择及理由
+---
 
-## File Structure
-详细的文件清单和目录结构
+## Go-Zero 开发流程
 
-## Interface Definitions
-\`\`\`go
-type Model interface {
-    // 方法定义
-}
-\`\`\`
+按以下顺序设计和生成：
 
-## Sequence Diagrams
-主要流程的序列图
-
-## Technical Constraints
-
-### IDRM通用约束
-- 架构约束
-- 编码约束  
-- 质量约束
-
-### 功能特定约束
-- ORM选择理由
-- 性能要求
-- 安全考虑
-
-## Data Model
-
-### 表结构
-\`\`\`sql
-CREATE TABLE ...
-\`\`\`
-
-### 字段说明
-详细的字段定义和约束
-
-### Go结构体
-\`\`\`go
-type Entity struct { ... }
-\`\`\`
-
-## Error Handling
-错误定义和处理策略
-
-## Testing Strategy
-测试方法和Mock方案
+```
+Step 1: 定义 API 文件 (.api)     → AI 手写
+Step 2: 生成 Handler/Types       → goctl api go
+Step 3: 定义 DDL 文件 (.sql)     → AI 手写
+Step 4: 引用 Model 接口          → AI 手写
+Step 5: 实现 Logic 层            → Phase 4 实施
 ```
 
-## 各部分说明
+---
 
-### Architecture Overview
-- 分层架构设计
-- 组件职责划分
-- 依赖关系
+## Step 1: API 文件定义
 
-### Sequence Diagrams（在约束之前）
-- 主要业务流程图
-- 异常处理流程
-- 系统交互图
+**AI 手写** | **位置**: `api/doc/{module}/{feature}.api`
 
-### Technical Constraints
-
-**IDRM通用约束**（必须包含）：
-```markdown
-### IDRM通用约束
-- MUST follow layered architecture (Handler → Logic → Model)
-- MUST implement dual ORM support
-- Functions MUST be < 50 lines
-- MUST use Chinese comments for all public items
-- Error wrapping MUST use %w
-- Test coverage MUST be > 80%
-- MUST pass golangci-lint check
-```
-
-**功能特定约束**：
-- ORM选择（GORM/SQLx）及理由
-- 性能要求（响应时间、并发）
-- 特殊的技术限制
-
-### Data Model
-
-**DDL 文件位置**: `migrations/{module}/{table}.sql`
-
-每个功能需要输出独立的 DDL 文件，用于 `goctl model` 代码生成。
-
-**DDL 格式要求**:
-```sql
--- migrations/resource_catalog/tags.sql
-CREATE TABLE `tags` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '标签ID',
-    `name` varchar(50) NOT NULL COMMENT '标签名称',
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `deleted_at` datetime DEFAULT NULL COMMENT '删除时间(软删除)',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='标签表';
-```
-
-**关键检查点**:
-- 完整的表结构定义
-- 字段详细说明（COMMENT）
-- Go结构体定义
-- 索引设计
-
-### API Contract (go-zero)
-
-每个功能需要定义 go-zero 格式的 API 文件，作为前后端接口契约。
-
-**文件位置**: `api/doc/{module}/{feature}.api`
-
-**示例**: `api/doc/resource_catalog/tag.api`
-
-**格式要求**:
 ```api
 syntax = "v1"
 
-info(
-    title: "{Feature} API"
-    desc: "功能描述"
-    version: "v1"
-)
+import "../base.api"
 
 type (
     CreateXxxReq {
-        Name string `json:"name"`
+        Name string `json:"name" validate:"required,max=50"`
     }
     CreateXxxResp {
         Id int64 `json:"id"`
@@ -156,56 +54,99 @@ type (
 )
 
 @server(
-    prefix: /api/v1
+    prefix: /api/v1/{module}
     group: {feature}
 )
-service idrm-api {
+service project-api {
     @handler CreateXxx
-    post /xxx (CreateXxxReq) returns (CreateXxxResp)
+    post /{feature} (CreateXxxReq) returns (CreateXxxResp)
+    
+    @handler GetXxx
+    get /{feature}/:id (IdReq) returns (XxxResp)
+    
+    @handler ListXxx
+    get /{feature} (PageInfoWithKeyword) returns (ListXxxResp)
 }
 ```
 
-**关键检查点**:
-- 遵循 RESTful 规范
-- 请求/响应类型定义完整
-- 分组和前缀符合项目约定
+---
 
-## AI工具使用
+## Step 2: 生成 Handler/Types
 
-**Kiro.dev**：
-```
-基于requirements.md
-自动生成design.md框架
+**goctl 自动生成**
+
+```bash
+goctl api go -api api/doc/{module}/{feature}.api -dir api/ --style=go_zero
 ```
 
-**Cursor**：
-```
-@requirements.md
-@spec/architecture/layered-architecture.md
-@spec/architecture/dual-orm-pattern.md
+**生成文件**（可覆盖）：
+- `api/internal/handler/{module}/*.go`
+- `api/internal/types/types.go`
 
-Phase 2: 生成Design
+**不可覆盖**（已存在则跳过）：
+- `api/api.go`
+- `api/internal/svc/servicecontext.go`
 
-要求：
-1. 完整的架构设计
-2. 序列图
-3. 技术约束
-4. 数据模型
+---
+
+## Step 3: DDL 文件定义
+
+**AI 手写** | **位置**: `migrations/{module}/{table}.sql`
+
+```sql
+CREATE TABLE `{table}` (
+    `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `name` varchar(50) NOT NULL COMMENT '名称',
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `deleted_at` datetime DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='表注释';
 ```
+
+---
+
+## Step 4: Model 接口引用
+
+**AI 手写** | **位置**: `model/{module}/{table}/`
+
+Model 层采用双 ORM 模式，需手动定义接口：
+
+```go
+type Model interface {
+    Insert(ctx context.Context, data *Entity) (*Entity, error)
+    FindOne(ctx context.Context, id int64) (*Entity, error)
+    Update(ctx context.Context, data *Entity) error
+    Delete(ctx context.Context, id int64) error
+    WithTx(tx interface{}) Model
+}
+```
+
+详见：`sdd_doc/spec/architecture/dual-orm-pattern.md`
+
+---
+
+## 文件产出清单
+
+| 序号 | 文件 | 生成方式 | 位置 |
+|------|------|----------|------|
+| 1 | 设计文档 | AI 手写 | `specs/{feature}/plan.md` |
+| 2 | API 文件 | AI 手写 | `api/doc/{module}/{feature}.api` |
+| 3 | DDL 文件 | AI 手写 | `migrations/{module}/{table}.sql` |
+| 4 | Handler | goctl 生成 | `api/internal/handler/{module}/` |
+| 5 | Types | goctl 生成 | `api/internal/types/` |
+| 6 | Model | AI 手写 | `model/{module}/{table}/` |
+
+---
 
 ## 质量门禁 (Gate 2)
 
+- [ ] API 文件定义完整
+- [ ] DDL 文件定义完整
+- [ ] ORM 选择合理
 - [ ] 符合分层架构
-- [ ] ORM选择合理
 - [ ] 文件清单完整
-- [ ] 接口定义清晰
-- [ ] 序列图完整
-- [ ] 技术约束明确
-- [ ] 数据模型完整
-- [ ] **DDL 文件 (.sql) 定义完整**
-- [ ] **API Contract (.api) 定义完整**
-
-参考：`../quality/quality-gates.md#gate-2`
 
 ---
 
@@ -214,11 +155,12 @@ Phase 2: 生成Design
 > **AI MUST STOP HERE**
 
 完成 Phase 2 后：
-1. 向用户展示生成的 `design.md`、`.api` 和 `.sql` 文件
+1. 向用户展示 `plan.md`、`.api`、`.sql` 文件
 2. 等待用户审批后再继续 Phase 3
 3. **禁止自动进入 Phase 3**
 
 ---
 
 ## 下一步
+
 → Phase 3: Tasks (需用户确认)

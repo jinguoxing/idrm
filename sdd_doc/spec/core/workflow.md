@@ -90,7 +90,6 @@ AI: 好的，我将执行 **Phase 0: Context**。
 ### 工具
 - Cursor: `@sdd_doc/spec/core/`
 - Claude CLI: `--files "sdd_doc/spec/**/*.md"`
-- Kiro.dev: 自动读取steering配置
 
 ### 检查清单
 - [ ] 已阅读project-charter
@@ -143,9 +142,8 @@ THE SYSTEM SHALL {behavior}
 ```
 
 ### 工具
-- **Kiro.dev**: 创建Spec → Requirements阶段
-- **Cursor**: 对话式编写requirements
-- **Claude CLI**: 批量生成requirements
+- **Cursor**: 对话式编写 requirements
+- **Claude CLI**: 批量生成 requirements
 
 ### 质量门禁
 参考：`../quality/quality-gates.md#gate-1`
@@ -203,8 +201,7 @@ type Model interface { ... }
 ```
 
 ### 工具
-- **Kiro.dev**: Design阶段自动生成
-- **Cursor**: 引用architecture规范设计
+- **Cursor**: 引用 architecture 规范设计
 - **Claude CLI**: 批量生成设计文档
 
 ### 质量门禁
@@ -257,9 +254,8 @@ type Model interface { ... }
 ```
 
 ### 工具
-- **Kiro.dev**: Implementation → tasks.md
 - **Cursor**: 手动拆分任务
-- **Claude CLI**: 批量生成tasks
+- **Claude CLI**: 批量生成 tasks
 
 ### 质量门禁
 参考：`../quality/quality-gates.md#gate-3`
@@ -304,7 +300,6 @@ type Model interface { ... }
 - 集成测试
 
 ### 工具
-- **Kiro.dev**: 点击task执行
 - **Cursor**: 快速编码和测试
 - **Claude CLI**: 批量生成测试
 
@@ -318,15 +313,15 @@ type Model interface { ... }
 
 ---
 
-## 工具映射
+## 阶段映射
 
-| 阶段 | Kiro.dev | IDRM (旧) | 说明 |
-|------|----------|-----------|------|
-| Phase 0 | - | - | 新增 |
-| Phase 1 | Requirements | Specify | 对应 |
-| Phase 2 | Design | Plan | 对应 |
-| Phase 3 | Implementation (前) | Tasks | 对应 |
-| Phase 4 | Implementation (后) | Implement | 对应 |
+| 阶段 | 说明 |
+|------|------|
+| Phase 0 | 上下文准备 |
+| Phase 1 | 需求规范 |
+| Phase 2 | 技术设计 |
+| Phase 3 | 任务拆分 |
+| Phase 4 | 实施验证 |
 
 ---
 

@@ -25,7 +25,7 @@
 - [ ] 数据库已启动
 - [ ] AI工具已配置
 
-## AI工具使用
+## AI 工具使用
 
 **Cursor**:
 ```
@@ -38,8 +38,6 @@
 claude --files "sdd_doc/spec/core/*.md" \
   "总结项目规范要点"
 ```
-
-**Kiro.dev**: Steering自动加载规范
 
 ## 检查清单
 - [ ] 理解分层架构

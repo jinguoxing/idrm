@@ -68,13 +68,12 @@ THE SYSTEM SHALL 返回验证错误信息
 - ❌ ORM选择（GORM/SQLx）
 - ❌ 数据库表结构
 
-## AI工具使用
+## AI 工具使用
 
-- **Kiro.dev**: 创建Spec → Requirements（聚焦业务）
-- **Cursor**: @spec对话生成
+- **Cursor**: @spec 对话生成
 - **Claude CLI**: 批量生成
 
-**Prompt示例**：
+**Prompt 示例**：
 ```
 @spec/workflow/phase1-specify.md
 

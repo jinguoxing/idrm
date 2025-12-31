@@ -550,14 +550,6 @@ WHEN 用户提交有效的分类创建请求
 THE SYSTEM SHALL 保存分类并返回201状态码和分类ID
 ```
 
-### Kiro.dev 使用
-
-在 Requirements 阶段，Kiro 会自动使用 EARS 格式。你可以：
-1. Review 生成的 EARS
-2. 补充遗漏的场景
-3. 细化错误信息
-4. 明确边界条件
-
 ---
 
 ## 📚 参考资源
